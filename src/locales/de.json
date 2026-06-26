@@ -1,0 +1,107 @@
+{
+  "app": {
+    "name": "Florify",
+    "tagline": "Ihr intelligenter lokaler Gartenassistent"
+  },
+  "nav": {
+    "home": "Start",
+    "garden": "Garten",
+    "calendar": "Kalender",
+    "chat": "Flora Bot",
+    "notifications": "Hinweise"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "logout": "Abmelden",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "welcome": "Willkommen bei Florify",
+    "subtitle": "Ihr hyper-lokaler Gartenbegleiter"
+  },
+  "onboarding": {
+    "title": "Garten einrichten",
+    "city": "Ihre Stadt oder Gemeinde",
+    "cityPlaceholder": "z. B. München",
+    "language": "Sprache",
+    "continue": "Weiter",
+    "selectLanguage": "Sprache wählen"
+  },
+  "dashboard": {
+    "greeting": "Hallo, Gärtner!",
+    "todayTip": "Tipp für heute",
+    "weather": "Wetter",
+    "humidity": "Luftfeuchtigkeit",
+    "wind": "Wind",
+    "yourGarden": "Ihr Saisongarten",
+    "tasks": "Aufgaben diesen Monat",
+    "recentAlerts": "Aktuelle Hinweise"
+  },
+  "garden": {
+    "title": "Saisongarten",
+    "addPlant": "Pflanze hinzufügen",
+    "removePlant": "Entfernen",
+    "noPlants": "Noch keine Pflanzen. Fügen Sie die erste hinzu!",
+    "selectPlant": "Pflanze wählen",
+    "categories": {
+      "vegetable": "Gemüse",
+      "fruit": "Obst",
+      "flower": "Blumen"
+    }
+  },
+  "calendar": {
+    "title": "Gartenkalender",
+    "noTasks": "Keine Aufgaben für diesen Monat.",
+    "tasksFor": "Aufgaben für"
+  },
+  "chat": {
+    "title": "Flora – Ihre Botanikerin",
+    "placeholder": "Fragen Sie zu Gießen, Schädlingen, Pflanzen…",
+    "send": "Senden",
+    "welcome": "Hallo! Ich bin Flora. Fragen Sie mich alles über Ihren Garten in {{city}}.",
+    "thinking": "Flora denkt nach…"
+  },
+  "notifications": {
+    "title": "Hinweise",
+    "empty": "Derzeit keine Hinweise.",
+    "waterReminder": "Seit {{days}} Tagen kein Regen – gießen Sie {{plant}}!",
+    "frostWarning": "Frost heute Nacht – schützen Sie empfindliche Pflanzen!",
+    "heatTip": "Heißer Tag – abends gießen."
+  },
+  "plants": {
+    "tomato": "Tomate",
+    "cucumber": "Gurke",
+    "pepper": "Paprika",
+    "carrot": "Karotte",
+    "lettuce": "Salat",
+    "strawberry": "Erdbeere",
+    "basil": "Basilikum",
+    "rose": "Rose",
+    "sunflower": "Sonnenblume",
+    "lavender": "Lavendel"
+  },
+  "tasks": {
+    "tomato_plant": "Tomatenpflanzen nach dem letzten Frost setzen",
+    "tomato_water": "Tomaten 2–3× pro Woche tief gießen",
+    "tomato_prune": "Geiztriebe an Tomaten entfernen",
+    "cucumber_water": "Gurken gleichmäßig feucht halten",
+    "cucumber_harvest": "Gurken ernten, wenn sie fest und grün sind",
+    "pepper_fertilize": "Paprika zur Saisonmitte düngen",
+    "carrot_thin": "Karottensämlinge auf 5 cm ausdünnen",
+    "lettuce_harvest": "Äußere Salatblätter ernten",
+    "strawberry_mulch": "Erdbeeren mulchen für Feuchtigkeit",
+    "basil_pinch": "Basilikumblüten entfernen für mehr Blätter",
+    "rose_prune": "Verblühte Rosen ausputzen",
+    "general_compost": "Kompost in Beete einarbeiten",
+    "general_weed": "Beete nach Regen jäten"
+  },
+  "common": {
+    "loading": "Laden…",
+    "error": "Etwas ist schiefgelaufen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  }
+}

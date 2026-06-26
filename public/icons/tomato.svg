@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <!-- Tomato body -->
+  <ellipse cx="256" cy="290" rx="130" ry="145" fill="#e53935"/>
+  <ellipse cx="220" cy="250" rx="35" ry="50" fill="#ef5350" opacity="0.5"/>
+  <!-- Stem -->
+  <path d="M256 120 Q230 90 210 110 Q200 80 230 70 Q256 50 282 70 Q312 80 302 110 Q280 90 256 120" fill="#43a047"/>
+  <rect x="248" y="115" width="16" height="30" rx="4" fill="#66bb6a"/>
+  <!-- Leaf left -->
+  <path d="M210 130 Q170 120 160 150 Q180 160 210 145 Z" fill="#43a047"/>
+  <!-- Leaf right -->
+  <path d="M302 130 Q342 120 352 150 Q332 160 302 145 Z" fill="#43a047"/>
+  <!-- Highlight -->
+  <ellipse cx="200" cy="220" rx="20" ry="30" fill="#ffcdd2" opacity="0.4"/>
+</svg>
