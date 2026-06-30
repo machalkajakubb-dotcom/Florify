@@ -441,8 +441,16 @@ export default function BedsPage() {
         .order("year", { ascending: false }).order("created_at", { ascending: false }),
       supabase.from("plants").select("*").eq("user_id", user.id),
     ]);
-    const parsed: GardenBed[] = (bedData ?? []).map((b: Record<string, unknown>) => ({
-      ...b, cells: parseCells(b.cells),
+    const parsed: GardenBed[] = (bedData ?? []).map((b) => ({
+      id: b.id as string,
+      user_id: b.user_id as string,
+      name: b.name as string,
+      note: (b.note as string) ?? "",
+      year: b.year as number,
+      cols: b.cols as number,
+      rows: b.rows as number,
+      created_at: b.created_at as string,
+      cells: parseCells(b.cells),
     }));
     setBeds(parsed);
     setUserPlants(plantData ?? []);

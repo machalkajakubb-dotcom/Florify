@@ -8,12 +8,12 @@ import { Navigation } from "@/components/Navigation";
 import { WeatherWidget } from "@/components/WeatherWidget";
 import { PlantGrid } from "@/components/PlantGrid";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
-import type { Plant, UserProfile, Language, GardenBed } from "@/utils/supabaseClient";
+import type { Plant, UserProfile, Language, GardenBed, BedCell } from "@/utils/supabaseClient";
 
-function parseCells(raw: unknown) {
+function parseCells(raw: unknown): BedCell[] {
   if (!raw) return [];
   if (typeof raw === "string") { try { return JSON.parse(raw); } catch { return []; } }
-  if (Array.isArray(raw)) return raw;
+  if (Array.isArray(raw)) return raw as BedCell[];
   return [];
 }
 
@@ -152,7 +152,17 @@ export default function HomePage() {
     ]);
 
     setPlants(userPlants ?? []);
-    setBeds((bedData ?? []).map((b: Record<string, unknown>) => ({ ...b, cells: parseCells(b.cells) })));
+    setBeds((bedData ?? []).map((b) => ({
+      id: b.id as string,
+      user_id: b.user_id as string,
+      name: b.name as string,
+      note: (b.note as string) ?? "",
+      year: b.year as number,
+      cols: b.cols as number,
+      rows: b.rows as number,
+      created_at: b.created_at as string,
+      cells: parseCells(b.cells),
+    })));
     setLoading(false);
   }, [router]);
 
