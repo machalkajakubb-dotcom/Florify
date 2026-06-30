@@ -10,6 +10,11 @@ import { PlantGrid } from "@/components/PlantGrid";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
 import type { Plant, UserProfile, Language, GardenBed, BedCell } from "@/utils/supabaseClient";
 
+// Vynutí dynamické (server-time) renderování – zabrání selhání
+// statického prerenderingu na buildu kvůli chybějícím env proměnným.
+export const dynamic = "force-dynamic";
+
+
 function parseCells(raw: unknown): BedCell[] {
   if (!raw) return [];
   if (typeof raw === "string") { try { return JSON.parse(raw); } catch { return []; } }

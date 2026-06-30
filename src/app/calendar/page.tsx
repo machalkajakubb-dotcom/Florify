@@ -8,6 +8,11 @@ import { Navigation } from "@/components/Navigation";
 import { GardenCalendar } from "@/components/Calendar";
 import type { Plant } from "@/utils/supabaseClient";
 
+// Vynutí dynamické (server-time) renderování – zabrání selhání
+// statického prerenderingu na buildu kvůli chybějícím env proměnným.
+export const dynamic = "force-dynamic";
+
+
 export default function CalendarPage() {
   const router = useRouter();
   const { t } = useLang();

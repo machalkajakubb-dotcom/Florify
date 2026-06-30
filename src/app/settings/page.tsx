@@ -8,6 +8,11 @@ import { useTheme } from "@/hooks/useTheme";
 import { Navigation } from "@/components/Navigation";
 import type { Language, UserProfile } from "@/utils/supabaseClient";
 
+// Vynutí dynamické (server-time) renderování – zabrání selhání
+// statického prerenderingu na buildu kvůli chybějícím env proměnným.
+export const dynamic = "force-dynamic";
+
+
 const LANGS: { code: Language; label: string; flag: string }[] = [
   { code: "cs", label: "Čeština",  flag: "🇨🇿" },
   { code: "en", label: "English",  flag: "🇬🇧" },

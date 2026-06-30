@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import { useLang } from "@/hooks/useLang";
 
+// Vynutí dynamické (server-time) renderování – zabrání selhání
+// statického prerenderingu na buildu kvůli chybějícím env proměnným.
+export const dynamic = "force-dynamic";
+
+
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useLang();

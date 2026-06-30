@@ -9,6 +9,11 @@ import { PlantInfoModal } from "@/components/PlantInfoModal";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
 import type { GardenBed, BedCell, Plant } from "@/utils/supabaseClient";
 
+// Vynutí dynamické (server-time) renderování – zabrání selhání
+// statického prerenderingu na buildu kvůli chybějícím env proměnným.
+export const dynamic = "force-dynamic";
+
+
 // ── Parsování buněk z DB ─────────────────────────────────────────────────────
 function parseCells(raw: unknown): BedCell[] {
   if (!raw) return [];
