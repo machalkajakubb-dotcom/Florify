@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabaseClient";
+import { supabase, isSupabaseConfigured } from "@/utils/supabaseClient";
 import { useLang } from "@/hooks/useLang";
 
 // Vynutí dynamické (server-time) renderování – zabrání selhání
@@ -73,7 +73,14 @@ export default function LoginPage() {
         router.push("/");
       }
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Nastala neočekávaná chyba.";
+      let msg = e instanceof Error ? e.message : "Nastala neočekávaná chyba.";
+      // "Failed to fetch" / "Load failed" obvykle znamená, že Supabase URL
+      // nebo klíč nejsou na serveru správně nastavené (chybí env proměnné na Vercelu).
+      if (msg.includes("Failed to fetch") || msg.includes("Load failed") || msg.includes("NetworkError")) {
+        msg = isSupabaseConfigured
+          ? "Nelze se připojit k Supabase. Zkontrolujte internetové připojení nebo zda je projekt v Supabase aktivní (nepozastavený)."
+          : "Aplikace není správně nakonfigurovaná – chybí přístupové údaje k Supabase. Kontaktujte prosím správce aplikace (chybí NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY v nastavení Vercelu).";
+      }
       setError(msg);
     } finally {
       setLoading(false);
@@ -89,6 +96,13 @@ export default function LoginPage() {
           <h1 className="font-display text-3xl font-bold text-garden-800 dark:text-garden-300">Florify</h1>
           <p className="text-garden-600 dark:text-garden-400 mt-1 text-sm">{t("tagline")}</p>
         </div>
+
+        {/* Varování při chybějící konfiguraci Supabase */}
+        {!isSupabaseConfigured && (
+          <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-2xl px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+            ⚠️ Aplikace zatím není plně nakonfigurovaná (chybí připojení k databázi). Přihlášení nebude fungovat, dokud nebudou na Vercelu nastaveny proměnné <code className="text-xs">NEXT_PUBLIC_SUPABASE_URL</code> a <code className="text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
+          </div>
+        )}
 
         {/* Přepínač */}
         <div className="flex bg-garden-100 dark:bg-gray-800 rounded-2xl p-1">
