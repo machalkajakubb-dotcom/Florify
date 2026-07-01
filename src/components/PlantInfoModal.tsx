@@ -90,7 +90,7 @@ export function PlantInfoModal({ plantId, onClose }: PlantInfoModalProps) {
           style={{ WebkitOverflowScrolling: "touch" as never, paddingBottom: "env(safe-area-inset-bottom, 20px)" }}>
           {ROWS.map(({ key, icon }) => {
             const detail = plant.details[key as keyof typeof plant.details];
-            const text = (detail as Record<string, string>)[lang] ?? (detail as Record<string, string>)["cs"];
+            const text = (detail as unknown as Record<string, string>)[lang] ?? (detail as unknown as Record<string, string>)["cs"];
             const label = ROW_LABELS[key][lang] ?? ROW_LABELS[key]["cs"];
             return (
               <div key={key} className="bg-stone-50 dark:bg-gray-800 rounded-2xl p-3">
