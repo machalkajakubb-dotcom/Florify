@@ -85,8 +85,13 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
       {/* Hlavička */}
-      <header className="bg-white dark:bg-gray-900 border-b border-stone-100 dark:border-gray-800 px-4 py-3 flex items-center gap-3 safe-top"
-        style={{ paddingTop:`calc(env(safe-area-inset-top) + 12px)` }}>
+      <header className="bg-white dark:bg-gray-900 border-b border-stone-100 dark:border-gray-800 px-4 flex items-center gap-3"
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 16px)",
+          paddingBottom: "12px",
+          // Minimální výška aby hlavička nebyla příliš malá ani na starých iOS
+          minHeight: "calc(env(safe-area-inset-top) + 68px)",
+        }}>
         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-forest-400 to-forest-700 flex items-center justify-center text-xl shadow-md">🌿</div>
         <div>
           <h1 className="font-display font-bold text-base text-bark-900 dark:text-gray-100">Flora</h1>

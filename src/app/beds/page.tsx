@@ -64,6 +64,8 @@ function BedEditor({ bed, userPlants, onSave, onClose, isNew }: {
   const [cells, setCells] = useState<BedCell[]>(bed.cells);
   const [cols, setCols] = useState(bed.cols);
   const [rows, setRows] = useState(bed.rows);
+  const [editName, setEditName] = useState(bed.name);
+  const [editNote, setEditNote] = useState(bed.note);
   const [selectedCell, setSelectedCell] = useState<{ r: number; c: number } | null>(null);
   const [infoPlantId, setInfoPlantId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -94,7 +96,7 @@ function BedEditor({ bed, userPlants, onSave, onClose, isNew }: {
   const handleSave = async () => {
     setSaving(true);
     setSaveError("");
-    const updated: GardenBed = { ...bed, cols, rows, cells };
+    const updated: GardenBed = { ...bed, name: editName.trim() || bed.name, note: editNote.trim(), cols, rows, cells };
     const ok = await saveBedToDb(updated, isNew);
     setSaving(false);
     if (ok) {
@@ -119,21 +121,18 @@ function BedEditor({ bed, userPlants, onSave, onClose, isNew }: {
     <div className="fixed inset-0 z-40 bg-stone-50 dark:bg-gray-950 flex flex-col">
       {/* Hlavička */}
       <div
-        className="bg-white dark:bg-gray-900 border-b border-stone-100 dark:border-gray-800 px-4 py-3 flex items-center gap-3 safe-top"
+        className="bg-white dark:bg-gray-900 border-b border-stone-100 dark:border-gray-800 px-4 py-3 flex items-center gap-3"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}
       >
         <button onClick={onClose}
-          className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-gray-800 flex items-center justify-center text-stone-500 hover:bg-stone-200 transition-colors">
+          className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-gray-800 flex items-center justify-center text-stone-500 hover:bg-stone-200 transition-colors flex-shrink-0">
           ✕
         </button>
         <div className="flex-1 min-w-0">
-          <h2 className="font-display font-bold dark:text-gray-100 truncate">
-            {t("beds_save")}: {bed.name}
-          </h2>
-          {saveError && <p className="text-xs text-red-500 mt-0.5">{saveError}</p>}
+          {saveError && <p className="text-xs text-red-500 mb-1">{saveError}</p>}
         </div>
         <button onClick={handleSave} disabled={saving}
-          className={`px-4 py-2 rounded-2xl text-sm font-semibold transition-all ${
+          className={`px-4 py-2 rounded-2xl text-sm font-semibold transition-all flex-shrink-0 ${
             savedOk
               ? "bg-forest-100 text-forest-700 dark:bg-forest-900 dark:text-forest-300"
               : "bg-forest-600 hover:bg-forest-700 text-white shadow-md disabled:opacity-60"
@@ -143,6 +142,24 @@ function BedEditor({ bed, userPlants, onSave, onClose, isNew }: {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollable">
+        {/* Editace názvu a poznámky */}
+        <div className="card space-y-2">
+          <input
+            type="text"
+            value={editName}
+            onChange={e => setEditName(e.target.value)}
+            placeholder={t("beds_name")}
+            className="input-field font-semibold"
+          />
+          <input
+            type="text"
+            value={editNote}
+            onChange={e => setEditNote(e.target.value)}
+            placeholder={t("beds_note")}
+            className="input-field text-sm"
+          />
+        </div>
+
         {/* Ovládání rozměrů */}
         <div className="flex gap-2 flex-wrap items-center">
           <button onClick={() => setRows(r => r + 1)} className="text-xs btn-secondary px-3 py-2">{t("beds_add_row")}</button>
@@ -265,64 +282,64 @@ function BedEditor({ bed, userPlants, onSave, onClose, isNew }: {
 function BedCard({ bed, onEdit, onDelete }: {
   bed: GardenBed; onEdit: () => void; onDelete: () => void;
 }) {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const plantedCells = bed.cells.filter(c => c.plant_id);
-  const uniquePlants = [...new Map(plantedCells.map(c => [c.plant_id, c])).values()];
-  const previewCols = Math.min(bed.cols, 6);
-  const previewRows = Math.min(bed.rows, 3);
+  const COLS = Math.min(bed.cols, 7);
+  const ROWS = Math.min(bed.rows, 4);
 
   return (
-    <div className="card hover:border-forest-200 dark:hover:border-forest-800 transition-colors">
-      <div className="flex gap-3">
-        {/* Mini mřížka */}
-        <button onClick={onEdit} className="flex-shrink-0">
-          <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: `repeat(${previewCols}, 1fr)` }}>
-            {Array.from({ length: previewRows }, (_, r) =>
-              Array.from({ length: previewCols }, (_, c) => {
-                const cell = bed.cells.find(cl => cl.row === r && cl.col === c);
-                return (
-                  <div key={`${r}-${c}`}
-                    className={`w-6 h-6 rounded border flex items-center justify-center text-[10px] ${
-                      cell?.plant_emoji
-                        ? "border-forest-200 dark:border-forest-800 bg-forest-50 dark:bg-forest-950"
-                        : "border-dashed border-stone-200 dark:border-gray-700 bg-stone-50 dark:bg-gray-800"
-                    }`}>
-                    {cell?.plant_emoji ?? ""}
-                  </div>
-                );
-              })
-            )}
-          </div>
+    <div className="card hover:border-forest-200 dark:hover:border-forest-800 transition-colors p-3">
+      {/* Celá mřížka záhonu – kliknutelná */}
+      <button onClick={onEdit} className="w-full mb-2">
+        <div
+          className="grid gap-0.5 w-full"
+          style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}
+        >
+          {Array.from({ length: ROWS }, (_, r) =>
+            Array.from({ length: COLS }, (_, c) => {
+              const cell = bed.cells.find(cl => cl.row === r && cl.col === c);
+              return (
+                <div
+                  key={`${r}-${c}`}
+                  className={`aspect-square rounded border flex items-center justify-center text-[9px] ${
+                    cell?.plant_emoji
+                      ? "border-forest-200 dark:border-forest-800 bg-forest-50 dark:bg-forest-950"
+                      : "border-dashed border-stone-200 dark:border-gray-700 bg-stone-50 dark:bg-gray-800"
+                  }`}
+                >
+                  {cell?.plant_emoji ?? ""}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </button>
+
+      {/* Název + poznámka */}
+      <button onClick={onEdit} className="text-left w-full mb-2">
+        <p className="font-bold text-sm text-bark-900 dark:text-gray-100 truncate">{bed.name}</p>
+        {bed.note && (
+          <p className="text-[11px] text-stone-400 dark:text-gray-500 truncate mt-0.5">{bed.note}</p>
+        )}
+        <p className="text-[10px] text-stone-300 dark:text-gray-600 mt-0.5">
+          {bed.cols}×{bed.rows} · {plantedCells.length} {t("beds_planted")}
+        </p>
+      </button>
+
+      {/* Tlačítka – vodorovně */}
+      <div className="flex gap-2">
+        <button
+          onClick={onEdit}
+          className="flex-1 text-xs bg-forest-50 dark:bg-forest-950 text-forest-700 dark:text-forest-300 py-1.5 rounded-xl border border-forest-100 dark:border-forest-900 hover:bg-forest-100 transition-colors"
+        >
+          ✏️ {t("beds_edit")}
         </button>
-
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <button onClick={onEdit} className="text-left w-full">
-            <p className="font-bold text-bark-900 dark:text-gray-100 truncate">{bed.name}</p>
-            {bed.note && <p className="text-xs text-stone-400 dark:text-gray-500 mt-0.5 line-clamp-1">{bed.note}</p>}
-          </button>
-          <div className="flex flex-wrap gap-0.5 mt-1.5">
-            {uniquePlants.slice(0, 6).map(c => (
-              <span key={c.plant_id} className="text-sm" title={c.plant_name ?? ""}>{c.plant_emoji}</span>
-            ))}
-            {uniquePlants.length > 6 && <span className="text-xs text-stone-400">+{uniquePlants.length - 6}</span>}
-          </div>
-          <p className="text-[10px] text-stone-400 dark:text-gray-600 mt-1">
-            {bed.cols}×{bed.rows} · {plantedCells.length} {t("beds_planted")}
-          </p>
-        </div>
-
-        {/* Akce */}
-        <div className="flex flex-col gap-1.5 flex-shrink-0">
-          <button onClick={onEdit}
-            className="text-xs bg-forest-50 dark:bg-forest-950 text-forest-700 dark:text-forest-300 px-3 py-1.5 rounded-xl border border-forest-100 dark:border-forest-900 hover:bg-forest-100 transition-colors whitespace-nowrap">
-            ✏️ {t("beds_edit")}
-          </button>
-          <button onClick={onDelete}
-            className="text-xs text-red-400 hover:text-red-600 px-3 py-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-950 transition-colors whitespace-nowrap">
-            🗑 {t("beds_delete")}
-          </button>
-        </div>
+        <button
+          onClick={onDelete}
+          className="flex-1 text-xs text-red-400 py-1.5 rounded-xl border border-red-100 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+        >
+          🗑 {t("beds_delete")}
+        </button>
       </div>
     </div>
   );

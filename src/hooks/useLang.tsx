@@ -33,7 +33,7 @@ const LangContext = createContext<LangCtx>({
 const VALID_LANGS: Language[] = ["cs", "en", "de", "pl"];
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Language>("cs");
+  const [lang, setLangState] = useState<Language>("en");
 
   useEffect(() => {
     // OPRAVA: byl zde bitový OR (|) místo ?? – to způsobovalo že jazyk se nikdy nenačetl

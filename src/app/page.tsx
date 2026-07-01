@@ -10,10 +10,7 @@ import { PlantGrid } from "@/components/PlantGrid";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
 import type { Plant, UserProfile, Language, GardenBed, BedCell } from "@/utils/supabaseClient";
 
-// Vynutí dynamické (server-time) renderování – zabrání selhání
-// statického prerenderingu na buildu kvůli chybějícím env proměnným.
 export const dynamic = "force-dynamic";
-
 
 function parseCells(raw: unknown): BedCell[] {
   if (!raw) return [];
@@ -22,25 +19,17 @@ function parseCells(raw: unknown): BedCell[] {
   return [];
 }
 
-// ── Onboarding ─────────────────────────────────────────────────────────────────
+// ── Onboarding ────────────────────────────────────────────────────────────────
 function Onboarding({ onDone }: { onDone: (city: string, lang: Language) => void }) {
   const { t, setLang } = useLang();
   const [city, setCity] = useState("");
-  const [selectedLang, setSelectedLang] = useState<Language>("cs");
-
+  const [selectedLang, setSelectedLang] = useState<Language>("en");
   const langs: { code: Language; label: string; flag: string }[] = [
-    { code:"cs", label:"Čeština",  flag:"🇨🇿" },
-    { code:"en", label:"English",  flag:"🇬🇧" },
-    { code:"de", label:"Deutsch",  flag:"🇩🇪" },
-    { code:"pl", label:"Polski",   flag:"🇵🇱" },
+    { code: "en", label: "English", flag: "🇬🇧" },
+    { code: "cs", label: "Čeština", flag: "🇨🇿" },
+    { code: "de", label: "Deutsch", flag: "🇩🇪" },
+    { code: "pl", label: "Polski",  flag: "🇵🇱" },
   ];
-
-  const handleDone = () => {
-    if (!city.trim()) return;
-    setLang(selectedLang);
-    onDone(city.trim(), selectedLang);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-forest-50 to-white dark:from-gray-950 dark:to-gray-900 flex flex-col items-center justify-center px-6 py-12 safe-top">
       <div className="w-full max-w-sm space-y-6 animate-fade-slide-up">
@@ -49,7 +38,6 @@ function Onboarding({ onDone }: { onDone: (city: string, lang: Language) => void
           <h1 className="font-display text-3xl font-bold text-forest-800 dark:text-forest-300">{t("welcome_title")}</h1>
           <p className="text-forest-600 dark:text-forest-400 mt-1 text-sm">{t("welcome_subtitle")}</p>
         </div>
-
         <div>
           <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-2">{t("onboarding_lang")}</label>
           <div className="grid grid-cols-2 gap-2">
@@ -59,21 +47,18 @@ function Onboarding({ onDone }: { onDone: (city: string, lang: Language) => void
                   selectedLang === l.code
                     ? "border-forest-500 bg-forest-50 dark:bg-forest-950 text-forest-800 dark:text-forest-200 font-semibold"
                     : "border-stone-100 dark:border-gray-700 bg-white dark:bg-gray-800 text-bark-700 dark:text-gray-300"
-                }`}>
-                {l.flag} {l.label}
-              </button>
+                }`}>{l.flag} {l.label}</button>
             ))}
           </div>
         </div>
-
         <div>
           <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-2">{t("onboarding_city")}</label>
           <input type="text" value={city} onChange={e => setCity(e.target.value)}
             placeholder={t("onboarding_city_placeholder")} className="input-field"
-            onKeyDown={e => e.key === "Enter" && handleDone()} />
+            onKeyDown={e => { if (e.key === "Enter" && city.trim()) { setLang(selectedLang); onDone(city.trim(), selectedLang); } }} />
         </div>
-
-        <button onClick={handleDone} disabled={!city.trim()} className="btn-primary w-full text-base disabled:opacity-50">
+        <button onClick={() => { setLang(selectedLang); onDone(city.trim(), selectedLang); }}
+          disabled={!city.trim()} className="btn-primary w-full text-base disabled:opacity-50">
           {t("onboarding_save")}
         </button>
       </div>
@@ -81,31 +66,35 @@ function Onboarding({ onDone }: { onDone: (city: string, lang: Language) => void
   );
 }
 
-// ── Mini náhled záhonu pro dashboard ─────────────────────────────────────────
-function BedPreviewCard({ bed, lang }: { bed: GardenBed; lang: string }) {
+// ── Mini náhled záhonu – jen mřížka a název ───────────────────────────────────
+function BedPreviewCard({ bed }: { bed: GardenBed }) {
   const router = useRouter();
-  const previewCols = Math.min(bed.cols, 5);
-  const previewRows = Math.min(bed.rows, 2);
-  const plantedCells = bed.cells.filter(c => c.plant_id);
-  const uniqueEmojis = [...new Map(bed.cells.filter(c => c.plant_emoji).map(c => [c.plant_emoji, c])).values()].slice(0, 5);
-  const plantedLabel: Record<string, string> = { cs:"obsazeno", en:"planted", de:"bepfl.", pl:"zasad." };
+  const COLS = Math.min(bed.cols, 5);
+  const ROWS = Math.min(bed.rows, 3);
 
   return (
-    <button onClick={() => router.push("/beds")}
-      className="card hover:border-forest-300 dark:hover:border-forest-700 transition-colors text-left w-full">
-      {/* Mini mřížka */}
-      <div className="mb-2">
-        <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: `repeat(${previewCols}, 1fr)` }}>
-          {Array.from({ length: previewRows }, (_, r) =>
-            Array.from({ length: previewCols }, (_, c) => {
+    <button
+      onClick={() => router.push("/beds")}
+      className="card flex flex-col items-center gap-1.5 p-2 hover:border-forest-300 dark:hover:border-forest-700 transition-colors w-full"
+    >
+      {/* Mřížka záhonu – zmenšená, celý záhon */}
+      <div className="w-full overflow-hidden">
+        <div
+          className="grid gap-0.5 mx-auto"
+          style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}
+        >
+          {Array.from({ length: ROWS }, (_, r) =>
+            Array.from({ length: COLS }, (_, c) => {
               const cell = bed.cells.find(cl => cl.row === r && cl.col === c);
               return (
-                <div key={`${r}-${c}`}
-                  className={`w-6 h-6 rounded border flex items-center justify-center text-[10px]
-                    ${cell?.plant_emoji
+                <div
+                  key={`${r}-${c}`}
+                  className={`aspect-square rounded border flex items-center justify-center text-[10px] ${
+                    cell?.plant_emoji
                       ? "border-forest-200 dark:border-forest-800 bg-forest-50 dark:bg-forest-950"
                       : "border-dashed border-stone-200 dark:border-gray-700 bg-stone-50 dark:bg-gray-800"
-                    }`}>
+                  }`}
+                >
                   {cell?.plant_emoji ?? ""}
                 </div>
               );
@@ -113,20 +102,15 @@ function BedPreviewCard({ bed, lang }: { bed: GardenBed; lang: string }) {
           )}
         </div>
       </div>
-
-      {/* Info */}
-      <p className="font-semibold text-sm text-bark-900 dark:text-gray-100 truncate">{bed.name}</p>
-      <div className="flex items-center justify-between mt-0.5">
-        <div className="flex gap-0.5">
-          {uniqueEmojis.map((c, i) => <span key={i} className="text-sm">{c.plant_emoji}</span>)}
-        </div>
-        <span className="text-[10px] text-stone-400">{plantedCells.length} {plantedLabel[lang] ?? plantedLabel["cs"]}</span>
-      </div>
+      {/* Jen název – ořezaný pokud přesahuje */}
+      <p className="text-[11px] font-semibold text-bark-900 dark:text-gray-100 truncate w-full text-center leading-tight">
+        {bed.name}
+      </p>
     </button>
   );
 }
 
-// ── Dashboard ──────────────────────────────────────────────────────────────────
+// ── Dashboard ─────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const router = useRouter();
   const { t, lang } = useLang();
@@ -146,18 +130,15 @@ export default function HomePage() {
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
-
     const { data: prof } = await supabase.from("profiles").select("*").eq("id", user.id).single();
     if (!prof?.city) { setNeedsOnboarding(true); setLoading(false); return; }
     setProfile(prof);
-
     const [{ data: userPlants }, { data: bedData }] = await Promise.all([
       supabase.from("plants").select("*").eq("user_id", user.id).order("added_at", { ascending: false }),
       supabase.from("garden_beds").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
     ]);
-
     setPlants(userPlants ?? []);
-    setBeds((bedData ?? []).map((b) => ({
+    setBeds((bedData ?? []).map(b => ({
       id: b.id as string,
       user_id: b.user_id as string,
       name: b.name as string,
@@ -202,15 +183,20 @@ export default function HomePage() {
   );
   if (needsOnboarding) return <Onboarding onDone={handleOnboardingDone} />;
 
-  const bedsLabel: Record<string, string> = { cs:"Moje záhony", en:"My Beds", de:"Meine Beete", pl:"Moje grządki" };
-  const addBedLabel: Record<string, string> = { cs:"Zobrazit vše →", en:"View all →", de:"Alle anzeigen →", pl:"Pokaż wszystkie →" };
-  const addFirstLabel: Record<string, string> = { cs:"Vytvořit záhon →", en:"Create bed →", de:"Beet erstellen →", pl:"Utwórz grządkę →" };
-
-  // Plná jména rostlin dle aktuálního jazyka
   const plantsWithNames = plants.map(p => {
     const cat = PLANT_CATALOG.find(c => c.id === p.plant_id);
     return { ...p, name: cat ? (cat.names[lang] ?? cat.names["cs"]) : p.name };
   });
+
+  const bedsLabel:     Record<string, string> = { cs: "Moje záhony",     en: "My Beds",          de: "Meine Beete",        pl: "Moje grządki" };
+  const addBedLabel:   Record<string, string> = { cs: "Zobrazit vše →",  en: "View all →",        de: "Alle anzeigen →",    pl: "Pokaż wszystkie →" };
+  const addFirstLabel: Record<string, string> = { cs: "Přidat záhon →",  en: "Add bed →",         de: "Beet hinzufügen →",  pl: "Dodaj grządkę →" };
+  const hintLabel:     Record<string, string> = {
+    cs: "Tip: Nejdřív si přidejte rostliny v záložce Zahrada – pak je budete moci sázet do záhonů a sledovat v kalendáři.",
+    en: "Tip: First add plants in the Garden tab – then you can plant them in beds and track them in the calendar.",
+    de: "Tipp: Fügen Sie zuerst Pflanzen im Garten-Tab hinzu – dann können Sie sie in Beete pflanzen und im Kalender verfolgen.",
+    pl: "Wskazówka: Najpierw dodaj rośliny w zakładce Ogród – potem będziesz mógł sadzić je w grządkach i śledzić w kalendarzu.",
+  };
 
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
@@ -232,15 +218,37 @@ export default function HomePage() {
           {/* Počasí */}
           <WeatherWidget city={profile?.city ?? "Praha"} />
 
-          {/* Moje zahrada */}
+          {/* Tip pro nové uživatele */}
+          {plants.length === 0 && (
+            <div className="bg-amber-50 dark:bg-amber-950 border border-amber-100 dark:border-amber-900 rounded-2xl px-3 py-2.5 flex gap-2 items-start">
+              <span className="text-base flex-shrink-0 mt-0.5">💡</span>
+              <p className="text-xs text-amber-800 dark:text-amber-300 leading-snug">{hintLabel[lang]}</p>
+            </div>
+          )}
+
+          {/* Moje zahrada – max 6 + tlačítko zobrazit vše */}
           <section className="card">
-            <h2 className="font-display font-bold text-lg mb-3 dark:text-gray-100">{t("dashboard_my_garden")}</h2>
-            <PlantGrid plants={plantsWithNames} onAdd={handleAddPlant} onRemove={handleRemovePlant} />
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-display font-bold text-lg dark:text-gray-100">{t("dashboard_my_garden")}</h2>
+              {plants.length > 6 && (
+                <a href="/garden" className="text-xs text-forest-600 dark:text-forest-400 hover:underline font-medium">
+                  {lang === "cs" ? `Zobrazit vše (${plants.length})` : lang === "en" ? `View all (${plants.length})` : lang === "de" ? `Alle (${plants.length})` : `Pokaż (${plants.length})`}
+                </a>
+              )}
+            </div>
+            <PlantGrid
+              plants={plantsWithNames}
+              onAdd={handleAddPlant}
+              onRemove={handleRemovePlant}
+              maxVisible={6}
+              showViewAll={plants.length > 6}
+              onViewAll={() => router.push("/garden")}
+            />
           </section>
 
-          {/* Moje záhony – 3 náhledy */}
-          <section>
-            <div className="flex items-center justify-between mb-2">
+          {/* Moje záhony – stejný styl jako Moje zahrada */}
+          <section className="card">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="font-display font-bold text-lg dark:text-gray-100">{bedsLabel[lang]}</h2>
               <a href="/beds" className="text-xs text-forest-600 dark:text-forest-400 hover:underline font-medium">
                 {beds.length > 0 ? addBedLabel[lang] : addFirstLabel[lang]}
@@ -248,15 +256,22 @@ export default function HomePage() {
             </div>
 
             {beds.length === 0 ? (
-              <a href="/beds" className="card flex items-center gap-3 border-dashed border-stone-200 dark:border-gray-700 hover:border-forest-300 dark:hover:border-forest-700 transition-colors">
-                <span className="text-3xl">🪴</span>
-                <p className="text-sm text-stone-400 dark:text-gray-500">{addFirstLabel[lang]}</p>
-              </a>
+              <div className="text-center py-6 text-stone-400">
+                <div className="text-3xl mb-2">🪴</div>
+                <p className="text-sm">{lang === "cs" ? "Zatím žádné záhony." : lang === "en" ? "No beds yet." : lang === "de" ? "Noch keine Beete." : "Brak grządek."}</p>
+              </div>
             ) : (
               <div className="grid grid-cols-3 gap-2">
-                {beds.slice(0, 3).map(b => <BedPreviewCard key={b.id} bed={b} lang={lang} />)}
+                {beds.slice(0, 3).map(b => <BedPreviewCard key={b.id} bed={b} />)}
               </div>
             )}
+
+            {/* Tlačítko přidat záhon */}
+            <a href="/beds"
+              className="mt-3 flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl border border-dashed border-stone-200 dark:border-gray-700 text-sm text-stone-400 dark:text-gray-500 hover:border-forest-300 dark:hover:border-forest-700 hover:text-forest-600 dark:hover:text-forest-400 transition-colors">
+              <span className="text-base">+</span>
+              {lang === "cs" ? "Přidat záhon" : lang === "en" ? "Add bed" : lang === "de" ? "Beet hinzufügen" : "Dodaj grządkę"}
+            </a>
           </section>
 
           {/* Rychlé zkratky */}

@@ -14,8 +14,8 @@ export const dynamic = "force-dynamic";
 
 
 const LANGS: { code: Language; label: string; flag: string }[] = [
-  { code: "cs", label: "Čeština",  flag: "🇨🇿" },
   { code: "en", label: "English",  flag: "🇬🇧" },
+  { code: "cs", label: "Čeština",  flag: "🇨🇿" },
   { code: "de", label: "Deutsch",  flag: "🇩🇪" },
   { code: "pl", label: "Polski",   flag: "🇵🇱" },
 ];
