@@ -180,18 +180,28 @@ export function PlantGrid({ plants, onAdd, onRemove, maxVisible, showViewAll, on
 function PlantCard({ plant, displayName, onRemove, onInfo }: {
   plant: Plant; displayName: string; onRemove: () => void; onInfo: () => void;
 }) {
-  const added = new Date(plant.added_at).toLocaleDateString("cs-CZ", { day: "numeric", month: "short" });
   return (
     <div className="relative bg-white dark:bg-gray-800 rounded-2xl border border-stone-100 dark:border-gray-700 p-3 flex flex-col items-center gap-1 shadow-sm group">
-      <button onClick={onInfo} className="flex flex-col items-center gap-1 w-full">
+      {/* Modrý kroužek ℹ vlevo nahoře – výrazný, snadno kliknutelný */}
+      <button
+        onClick={onInfo}
+        className="absolute -top-2 -left-2 z-10 w-7 h-7 rounded-full bg-forest-600 text-white text-[11px] font-bold flex items-center justify-center shadow-md hover:bg-forest-700 active:scale-95 transition-all"
+        aria-label="Informace o rostlině"
+      >
+        ℹ
+      </button>
+
+      {/* Zbytek karty – emoji + název, kliknutelný pro info */}
+      <button onClick={onInfo} className="flex flex-col items-center gap-1 w-full pt-1">
         <span className="text-3xl">{plant.emoji}</span>
         <p className="text-xs font-semibold text-bark-900 dark:text-gray-100 text-center leading-tight">{displayName}</p>
-        <p className="text-[10px] text-forest-400">{added}</p>
-        <span className="text-[9px] text-forest-500 dark:text-forest-400 bg-forest-50 dark:bg-forest-950 px-1.5 py-0.5 rounded-full mt-0.5">ℹ info</span>
       </button>
+
+      {/* Červený kroužek × vpravo nahoře */}
       <button
         onClick={onRemove}
-        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-100 dark:bg-red-900 text-red-500 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center shadow-sm"
+        className="absolute -top-2 -right-2 z-10 w-6 h-6 rounded-full bg-red-100 dark:bg-red-900 text-red-500 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center shadow-sm"
+        aria-label="Odebrat"
       >✕</button>
     </div>
   );
