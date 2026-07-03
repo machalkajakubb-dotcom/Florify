@@ -2,18 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Mobilní fullscreen chování ─────────────────────────────────────────────*/
-html, body {
+/* ── Mobilní layout ──────────────────────────────────────────────────────── */
+/* DŮLEŽITÉ: overflow:hidden na html/body blokuje klávesnici v PWA na iOS!
+   Místo toho používáme flex layout – každá stránka má h-screen flex flex-col
+   a scrollovatelný obsah je uvnitř flex-1 */
+html {
   height: 100%;
-  overflow: hidden;
+  /* Zabrání bounce scrollu celé stránky na iOS */
   overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
 }
+body {
+  height: 100%;
+  overscroll-behavior: none;
+  /* BEZ overflow:hidden – to blokuje klávesnici v PWA na iOS */
+}
+
+/* Safe area helpers */
 .safe-top    { padding-top: env(safe-area-inset-top); }
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 
+/* Scrollovatelný kontejner uvnitř stránek */
 .scrollable {
-  height: 100%;
   overflow-y: auto;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
@@ -22,7 +31,7 @@ html, body {
 .scrollable::-webkit-scrollbar-track { background: transparent; }
 .scrollable::-webkit-scrollbar-thumb { background: #c5e0b4; border-radius: 2px; }
 
-/* ── Animace ──────────────────────────────────────────────────────────────── */
+/* ── Animace ─────────────────────────────────────────────────────────────── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -37,9 +46,8 @@ html, body {
 
 .touch-target { min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
 
-/* ── Komponenty ───────────────────────────────────────────────────────────── */
+/* ── Komponenty ──────────────────────────────────────────────────────────── */
 @layer components {
-  /* Tlačítka */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
            bg-forest-600 hover:bg-forest-700 active:bg-forest-800
@@ -61,14 +69,10 @@ html, body {
            hover:bg-forest-50 dark:hover:bg-gray-800
            rounded-xl px-3 py-2 transition-all duration-150;
   }
-
-  /* Karta */
   .card {
     @apply bg-white dark:bg-gray-900 rounded-3xl
            shadow-sm border border-stone-100 dark:border-gray-800 p-4;
   }
-
-  /* Inputy */
   .input-field {
     @apply w-full bg-stone-50 dark:bg-gray-800
            border border-stone-200 dark:border-gray-700 rounded-2xl
@@ -79,21 +83,7 @@ html, body {
   }
 }
 
-/* ── Dark mode barvy pozadí ─────────────────────────────────────────────────*/
-:root {
-  --bg-base: #f9faf8;
-  --bg-card: #ffffff;
-}
-.dark {
-  --bg-base: #0f1a0f;   /* velmi tmavá lesní zelená */
-  --bg-card: #162316;   /* tmavě zelená karta */
-}
-
-body {
-  background-color: var(--bg-base);
-}
-
-/* Tmavý režim – tmavě zelené pozadí místo šedého */
+/* ── Dark mode pozadí ────────────────────────────────────────────────────── */
 .dark body, .dark .bg-gray-950 { background-color: #0f1a0f !important; }
 .dark .bg-gray-900              { background-color: #162316 !important; }
 .dark .bg-gray-800              { background-color: #1e2e1e !important; }

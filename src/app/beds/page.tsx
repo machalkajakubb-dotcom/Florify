@@ -82,33 +82,64 @@ function BedDetailModal({ bed, onClose, onEdit }: {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white dark:bg-gray-900 rounded-3xl w-full max-w-sm shadow-2xl flex flex-col"
-        style={{ maxHeight: "calc(100vh - 80px)" }}>
+      <div
+        className="relative bg-white dark:bg-gray-900 rounded-3xl w-full max-w-sm shadow-2xl flex flex-col"
+        style={{ maxHeight: "calc(100svh - 60px)" }}
+      >
         {/* Hlavička */}
-        <div className="flex items-center gap-3 px-5 pt-5 pb-3 border-b border-stone-100 dark:border-gray-800 flex-shrink-0">
+        <div className="flex items-start gap-3 px-5 pt-5 pb-4 border-b border-stone-100 dark:border-gray-800 flex-shrink-0">
           <div className="flex-1 min-w-0">
-            <h2 className="font-display font-bold text-lg dark:text-gray-100 truncate">{bed.name}</h2>
-            {bed.note && <p className="text-xs text-stone-400 mt-0.5">{bed.note}</p>}
+            <h2 className="font-display font-bold text-xl dark:text-gray-100 truncate">{bed.name}</h2>
+            {bed.note && <p className="text-xs text-stone-400 dark:text-gray-500 mt-0.5">{bed.note}</p>}
             <p className="text-[11px] text-stone-300 dark:text-gray-600 mt-0.5">{bed.cols}×{bed.rows} · {bed.year}</p>
           </div>
           <div className="flex gap-2 flex-shrink-0">
             <button onClick={onEdit}
-              className="text-xs bg-forest-50 dark:bg-forest-950 text-forest-700 dark:text-forest-300 px-3 py-1.5 rounded-xl border border-forest-100 dark:border-forest-900 hover:bg-forest-100 transition-colors">
+              className="flex items-center gap-1 text-xs bg-forest-50 dark:bg-forest-950 text-forest-700 dark:text-forest-300 px-3 py-1.5 rounded-xl border border-forest-100 dark:border-forest-900 hover:bg-forest-100 transition-colors">
               ✏️ {t("beds_edit")}
             </button>
             <button onClick={onClose}
-              className="w-8 h-8 rounded-full bg-stone-100 dark:bg-gray-800 flex items-center justify-center text-stone-500 hover:bg-stone-200 dark:hover:bg-gray-700 transition-colors">
+              className="w-8 h-8 rounded-full bg-stone-100 dark:bg-gray-800 flex items-center justify-center text-stone-500 hover:bg-stone-200 dark:hover:bg-gray-700 transition-colors flex-shrink-0">
               ✕
             </button>
           </div>
         </div>
 
-        {/* Obsah */}
-        <div className="overflow-y-auto flex-1 px-5 py-4 space-y-4"
-          style={{ WebkitOverflowScrolling: "touch", paddingBottom: "env(safe-area-inset-bottom, 16px)" }}>
-          {/* Celá mřížka záhonu */}
+        {/* Obsah – scrollovatelný */}
+        <div
+          className="overflow-y-auto flex-1 px-4 pt-4 space-y-4"
+          style={{
+            WebkitOverflowScrolling: "touch",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)",
+          }}
+        >
+          {/* Celá mřížka – buňky větší, celý záhon */}
           <div className="overflow-x-auto">
-            <BedMiniGrid bed={bed} cellSize="w-9 h-9" />
+            <div
+              className="inline-grid gap-1"
+              style={{ gridTemplateColumns: `repeat(${bed.cols}, minmax(36px, 36px))` }}
+            >
+              {Array.from({ length: bed.rows }, (_, r) =>
+                Array.from({ length: bed.cols }, (_, c) => {
+                  const cell = bed.cells.find(cl => cl.row === r && cl.col === c);
+                  const isSoil = cell?.plant_id === "__soil__";
+                  const isPath = cell?.plant_id === "__path__";
+                  return (
+                    <div
+                      key={`${r}-${c}`}
+                      className={`w-9 h-9 rounded-lg border flex flex-col items-center justify-center text-xs leading-none ${
+                        isSoil  ? "border-amber-300 bg-amber-100 dark:bg-amber-900"
+                        : isPath ? "border-stone-300 bg-stone-100 dark:bg-stone-700"
+                        : cell?.plant_emoji ? "border-forest-200 dark:border-forest-800 bg-forest-50 dark:bg-forest-950"
+                        : "border-dashed border-stone-200 dark:border-gray-700 bg-stone-50 dark:bg-gray-800"
+                      }`}
+                    >
+                      {isSoil ? "🟫" : isPath ? "⬜" : (cell?.plant_emoji ?? "")}
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
 
           {/* Legenda rostlin */}
@@ -117,13 +148,14 @@ function BedDetailModal({ bed, onClose, onEdit }: {
               <p className="text-xs font-semibold text-stone-400 dark:text-gray-500 uppercase tracking-wide mb-2">
                 {t("beds_plants_in_bed")}
               </p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {unique.map(c => {
                   const p = PLANT_CATALOG.find(x => x.id === c.plant_id);
                   return (
                     <span key={c.plant_id}
-                      className="flex items-center gap-1 bg-forest-50 dark:bg-forest-950 border border-forest-100 dark:border-forest-900 px-2 py-1 rounded-full text-xs text-forest-700 dark:text-forest-300">
-                      {c.plant_emoji} {p ? (p.names[lang] ?? p.names["cs"]) : c.plant_name}
+                      className="flex items-center gap-1.5 bg-forest-50 dark:bg-forest-950 border border-forest-100 dark:border-forest-900 px-2.5 py-1.5 rounded-full text-sm text-forest-700 dark:text-forest-300">
+                      {c.plant_emoji}
+                      <span className="text-xs">{p ? (p.names[lang] ?? p.names["cs"]) : c.plant_name}</span>
                     </span>
                   );
                 })}
@@ -365,36 +397,76 @@ function BedEditor({ bed, userPlants, onSave, onClose, isNew }: {
   );
 }
 
-// ── BedCard – malý náhled v seznamu ─────────────────────────────────────────
+// ── BedCard – kompaktní náhled ───────────────────────────────────────────────
 function BedCard({ bed, onViewDetail, onEdit, onDelete }: {
   bed: GardenBed; onViewDetail: () => void; onEdit: () => void; onDelete: () => void;
 }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const planted = bed.cells.filter(c => c.plant_id && !c.plant_id.startsWith("__")).length;
+
+  // Unikátní rostliny pro emoji řádek
+  const uniqueEmojis = [...new Map(
+    bed.cells.filter(c => c.plant_emoji && !c.plant_id?.startsWith("__")).map(c => [c.plant_emoji, c.plant_emoji])
+  ).values()].slice(0, 5);
+
   return (
-    <div className="card p-3 hover:border-forest-200 dark:hover:border-forest-800 transition-colors">
-      {/* Malý náhled mřížky – kliknutí otevře detail modal */}
-      <button onClick={onViewDetail} className="w-full mb-2 group">
-        <div className="overflow-hidden rounded-lg">
-          <BedMiniGrid bed={bed} maxCols={6} maxRows={3} cellSize="w-5 h-5" />
+    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-stone-100 dark:border-gray-800 shadow-sm overflow-hidden">
+      {/* Kliknutelný náhled – celá horní část */}
+      <button onClick={onViewDetail} className="w-full p-3 text-left">
+        {/* Mini mřížka – maximálně 5×3 buňky, malé */}
+        <div className="mb-2 overflow-hidden">
+          <div
+            className="grid gap-px"
+            style={{ gridTemplateColumns: `repeat(${Math.min(bed.cols, 5)}, 1fr)` }}
+          >
+            {Array.from({ length: Math.min(bed.rows, 3) }, (_, r) =>
+              Array.from({ length: Math.min(bed.cols, 5) }, (_, c) => {
+                const cell = bed.cells.find(cl => cl.row === r && cl.col === c);
+                const isSoil = cell?.plant_id === "__soil__";
+                const isPath = cell?.plant_id === "__path__";
+                return (
+                  <div
+                    key={`${r}-${c}`}
+                    className={`h-5 rounded-sm flex items-center justify-center text-[8px] leading-none ${
+                      isSoil  ? "bg-amber-200 dark:bg-amber-900"
+                      : isPath ? "bg-stone-200 dark:bg-stone-700"
+                      : cell?.plant_emoji ? "bg-forest-100 dark:bg-forest-900"
+                      : "bg-stone-100 dark:bg-gray-800"
+                    }`}
+                  >
+                    {isSoil ? "·" : isPath ? "·" : (cell?.plant_emoji ?? "")}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Název */}
+        <p className="text-xs font-bold text-bark-900 dark:text-gray-100 truncate leading-tight">{bed.name}</p>
+
+        {/* Emojis rostlin + počet */}
+        <div className="flex items-center gap-1 mt-0.5">
+          <span className="text-[11px] leading-none">{uniqueEmojis.join("")}</span>
+          {planted > 0 && (
+            <span className="text-[9px] text-stone-400 dark:text-gray-500">· {planted}</span>
+          )}
         </div>
       </button>
 
-      {/* Název */}
-      <button onClick={onViewDetail} className="text-left w-full mb-2">
-        <p className="font-semibold text-sm text-bark-900 dark:text-gray-100 truncate">{bed.name}</p>
-        <p className="text-[10px] text-stone-300 dark:text-gray-600 mt-0.5">
-          {bed.cols}×{bed.rows} · {bed.cells.filter(c => c.plant_id && !c.plant_id.startsWith("__")).length} {t("beds_planted")}
-        </p>
-      </button>
-
-      {/* Tlačítka */}
-      <div className="flex gap-1.5">
-        <button onClick={onEdit}
-          className="flex-1 text-xs bg-forest-50 dark:bg-forest-950 text-forest-700 dark:text-forest-300 py-1.5 rounded-xl border border-forest-100 dark:border-forest-900 hover:bg-forest-100 transition-colors">
+      {/* Tlačítka – spodní pruh */}
+      <div className="flex border-t border-stone-100 dark:border-gray-800">
+        <button
+          onClick={onEdit}
+          className="flex-1 py-2 text-[11px] font-medium text-forest-600 dark:text-forest-400 hover:bg-forest-50 dark:hover:bg-forest-950 transition-colors"
+        >
           ✏️ {t("beds_edit")}
         </button>
-        <button onClick={onDelete}
-          className="flex-1 text-xs text-red-400 py-1.5 rounded-xl border border-red-100 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950 transition-colors">
+        <div className="w-px bg-stone-100 dark:bg-gray-800" />
+        <button
+          onClick={onDelete}
+          className="flex-1 py-2 text-[11px] font-medium text-red-400 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+        >
           🗑 {t("beds_delete")}
         </button>
       </div>
@@ -545,7 +617,7 @@ export default function BedsPage() {
 
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
-      <main className="flex-1 scrollable pb-24 safe-top">
+      <main className="flex-1 scrollable safe-top" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)" }}>
         <div className="max-w-lg mx-auto px-4 py-5 space-y-4">
           <div className="flex items-center justify-between">
             <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">{t("beds_title")}</h1>

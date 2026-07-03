@@ -200,7 +200,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
-      <main className="flex-1 scrollable pb-28 safe-top">
+      <main className="flex-1 scrollable safe-top" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)" }}>
         <div className="max-w-lg mx-auto px-4 py-5 space-y-4">
 
           {/* Pozdrav */}
