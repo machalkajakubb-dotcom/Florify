@@ -107,7 +107,7 @@ export function PlantGrid({ plants, onAdd, onRemove, maxVisible, showViewAll, on
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => { setShowModal(false); setSearch(""); }} />
           <div className="relative bg-white dark:bg-gray-900 rounded-t-3xl px-4 pt-4 flex flex-col"
-            style={{ maxHeight: "80vh", paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}>
+            style={{ maxHeight: "80vh", paddingBottom: "calc(env(safe-area-inset-bottom) + 80px)" }}>
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-display font-bold text-lg dark:text-gray-100">{t("plant_add_title")}</h3>
               <button className="btn-ghost" onClick={() => { setShowModal(false); setSearch(""); }}>✕</button>

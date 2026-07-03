@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LangProvider } from "@/hooks/useLang";
 import { ThemeProvider } from "@/hooks/useTheme";
+import { SplashScreen } from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
   title: "Florify – Chytrý zahradní asistent",
@@ -48,7 +49,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
-          <LangProvider>{children}</LangProvider>
+          <LangProvider>
+            <SplashScreen />
+            {children}
+          </LangProvider>
         </ThemeProvider>
       </body>
     </html>
