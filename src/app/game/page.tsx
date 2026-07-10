@@ -106,7 +106,7 @@ const DEFAULT_STATE: Omit<GameState, "last_active_at"> = {
 
 const TRANSLATIONS = {
   en: {
-    back:"← Back", title:"FloriGarden Idle", perSec:"/s",
+    back:"← Back", title:"FloraPlay", perSec:"/s",
     plant:"Plant", harvest:"Harvest!", locked:"Unlock", shop:"Shop",
     upgrade:"Upgrade", level:"Lv.", offlineTitle:"Welcome back!",
     offlineMsg:"Your helpers produced", offlineUnit:"🍃 Freshness while you were away!",
@@ -138,7 +138,7 @@ const TRANSLATIONS = {
     replaceBtn:"Replace", replaceCancel:"Keep",
   },
   cs: {
-    back:"← Zpět", title:"FloriGarden Idle", perSec:"/s",
+    back:"← Zpět", title:"FloraPlay", perSec:"/s",
     plant:"Zasadit", harvest:"Sklidit!", locked:"Odemknout", shop:"Obchod",
     upgrade:"Vylepšit", level:"Úr.", offlineTitle:"Vítej zpět!",
     offlineMsg:"Tvoji pomocníci vyprodukovali", offlineUnit:"🍃 Svěžesti, zatímco jsi byl pryč!",
@@ -170,7 +170,7 @@ const TRANSLATIONS = {
     replaceBtn:"Vyměnit", replaceCancel:"Ponechat",
   },
   de: {
-    back:"← Zurück", title:"FloriGarden Idle", perSec:"/s",
+    back:"← Zurück", title:"FloraPlay", perSec:"/s",
     plant:"Pflanzen", harvest:"Ernten!", locked:"Freischalten", shop:"Shop",
     upgrade:"Verbessern", level:"Lv.", offlineTitle:"Willkommen zurück!",
     offlineMsg:"Deine Helfer haben produziert", offlineUnit:"🍃 Frische, während du weg warst!",
@@ -202,7 +202,7 @@ const TRANSLATIONS = {
     replaceBtn:"Ersetzen", replaceCancel:"Behalten",
   },
   pl: {
-    back:"← Wróć", title:"FloriGarden Idle", perSec:"/s",
+    back:"← Wróć", title:"FloraPlay", perSec:"/s",
     plant:"Sadź", harvest:"Zbierz!", locked:"Odblokuj", shop:"Sklep",
     upgrade:"Ulepsz", level:"Poz.", offlineTitle:"Witaj z powrotem!",
     offlineMsg:"Twoi pomocnicy wyprodukowali", offlineUnit:"🍃 Świeżości, gdy cię nie było!",
@@ -640,16 +640,13 @@ export default function GamePage() {
             const mature = remaining === 0;
 
             return (
-  <button key={slotId}
-    onClick={() => mature ? doHarvest(slot) : setUpgradeSlot(slotId)}
-    onContextMenu={(e) => {
-      e.preventDefault(); // Zabrání vyskočení systémového menu v mobilu i na PC
-      setPlantModal(slotId);
-    }}
-    className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 p-2 transition-all ${
-      mature ? "border-amber-400 bg-amber-50 dark:bg-amber-950 animate-pulse-soft"
-             : "border-forest-200 dark:border-forest-800 bg-white dark:bg-gray-900"
-    }`}>
+              <button key={slotId}
+                onClick={() => mature ? doHarvest(slot) : setUpgradeSlot(slotId)}
+                onLongPress={() => setPlantModal(slotId)}
+                className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 p-2 transition-all ${
+                  mature ? "border-amber-400 bg-amber-50 dark:bg-amber-950 animate-pulse-soft"
+                         : "border-forest-200 dark:border-forest-800 bg-white dark:bg-gray-900"
+                }`}>
                 <span className="text-2xl leading-none">{p.emoji}</span>
                 <span className="text-[9px] font-bold text-forest-600 dark:text-forest-400">{t.level} {slot.level}</span>
                 {mature ? (
