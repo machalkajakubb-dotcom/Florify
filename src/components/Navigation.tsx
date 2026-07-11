@@ -1,32 +1,33 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLang } from "@/hooks/useLang";
 
-// Navigace bez textů – jen ikony (7 sekcí)
+// Navigace s ikonami a popisky (6 sekcí)
 const NAV_ITEMS = [
-  { href: "/",          icon: HomeIcon,      match: ["/"] },
-  { href: "/mygarden",  icon: GardenIcon,    match: ["/mygarden", "/garden", "/beds", "/harvest"] },
-  { href: "/calendar",  icon: CalIcon,       match: ["/calendar"] },
-  { href: "/chat",      icon: ChatIcon,      match: ["/chat"] },
-  { href: "/floribook", icon: FloriBookIcon, match: ["/floribook"] },
-  { href: "/game",      icon: GameIcon,      match: ["/game"] },
-  { href: "/settings",  icon: SettingsIcon,  match: ["/settings"] },
+  { href: "/",         icon: HomeIcon,     match: ["/"],                                    labelKey: "nav_home" },
+  { href: "/mygarden", icon: GardenIcon,   match: ["/mygarden", "/garden", "/beds", "/harvest"], labelKey: "nav_garden" },
+  { href: "/calendar", icon: CalIcon,      match: ["/calendar"],                            labelKey: "nav_calendar" },
+  { href: "/chat",     icon: ChatIcon,     match: ["/chat"],                                 labelKey: "nav_chat" },
+  { href: "/game",     icon: GameIcon,     match: ["/game"],                                 labelKey: "nav_game" },
+  { href: "/settings", icon: SettingsIcon, match: ["/settings"],                              labelKey: "nav_settings" },
 ] as const;
 
 export function Navigation() {
   const pathname = usePathname();
+  const { t } = useLang();
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-stone-100 dark:border-gray-800 grid grid-cols-7"
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-stone-100 dark:border-gray-800 grid grid-cols-6"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      {NAV_ITEMS.map(({ href, icon: Icon, match }) => {
+      {NAV_ITEMS.map(({ href, icon: Icon, match, labelKey }) => {
         const active = match.some(m => pathname === m || (m !== "/" && pathname.startsWith(m)));
         return (
           <Link key={href} href={href}
-            className={`flex flex-col items-center justify-center py-3 transition-all duration-150 ${
+            className={`flex flex-col items-center justify-center gap-0.5 py-2.5 transition-all duration-150 ${
               active ? "text-forest-600 dark:text-forest-400" : "text-stone-400 dark:text-gray-600 hover:text-forest-600 dark:hover:text-forest-400"
             }`}>
             <Icon active={active} className={`w-6 h-6 transition-transform ${active ? "scale-110" : ""}`} />
-            {active && <span className="w-4 h-0.5 bg-forest-600 dark:bg-forest-400 rounded-full mt-0.5" />}
+            <span className={`text-[10px] leading-none ${active ? "font-semibold" : "font-medium"}`}>{t(labelKey)}</span>
           </Link>
         );
       })}
@@ -45,9 +46,6 @@ function CalIcon({ active, className }: { active: boolean; className?: string })
 }
 function ChatIcon({ active, className }: { active: boolean; className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill={active?"currentColor":"none"} stroke="currentColor" strokeWidth={active?0:1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>;
-}
-function FloriBookIcon({ active, className }: { active: boolean; className?: string }) {
-  return <svg className={className} viewBox="0 0 24 24" fill={active?"currentColor":"none"} stroke="currentColor" strokeWidth={active?0:1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>;
 }
 function GameIcon({ active, className }: { active: boolean; className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill={active?"currentColor":"none"} stroke="currentColor" strokeWidth={active?0:1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>;

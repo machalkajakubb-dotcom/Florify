@@ -8,7 +8,7 @@ import { Navigation } from "@/components/Navigation";
 import { WeatherWidget } from "@/components/WeatherWidget";
 import { PlantGrid } from "@/components/PlantGrid";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
-import type { Plant, UserProfile, Language, GardenBed, BedCell } from "@/utils/supabaseClient";
+import type { Plant, UserProfile, GardenBed, BedCell } from "@/utils/supabaseClient";
 
 export const dynamic = "force-dynamic";
 
@@ -17,53 +17,6 @@ function parseCells(raw: unknown): BedCell[] {
   if (typeof raw === "string") { try { return JSON.parse(raw); } catch { return []; } }
   if (Array.isArray(raw)) return raw as BedCell[];
   return [];
-}
-
-// ── Onboarding ────────────────────────────────────────────────────────────────
-function Onboarding({ onDone }: { onDone: (city: string, lang: Language) => void }) {
-  const { t, setLang } = useLang();
-  const [city, setCity] = useState("");
-  const [selectedLang, setSelectedLang] = useState<Language>("en");
-  const langs: { code: Language; label: string; flag: string }[] = [
-    { code: "en", label: "English", flag: "🇬🇧" },
-    { code: "cs", label: "Čeština", flag: "🇨🇿" },
-    { code: "de", label: "Deutsch", flag: "🇩🇪" },
-    { code: "pl", label: "Polski",  flag: "🇵🇱" },
-  ];
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-forest-50 to-white dark:from-gray-950 dark:to-gray-900 flex flex-col items-center justify-center px-6 py-12 safe-top">
-      <div className="w-full max-w-sm space-y-6 animate-fade-slide-up">
-        <div className="text-center">
-          <div className="text-6xl mb-3">🌱</div>
-          <h1 className="font-display text-3xl font-bold text-forest-800 dark:text-forest-300">{t("welcome_title")}</h1>
-          <p className="text-forest-600 dark:text-forest-400 mt-1 text-sm">{t("welcome_subtitle")}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-2">{t("onboarding_lang")}</label>
-          <div className="grid grid-cols-2 gap-2">
-            {langs.map(l => (
-              <button key={l.code} onClick={() => setSelectedLang(l.code)}
-                className={`flex items-center gap-2 p-3 rounded-2xl border-2 transition-all text-sm ${
-                  selectedLang === l.code
-                    ? "border-forest-500 bg-forest-50 dark:bg-forest-950 text-forest-800 dark:text-forest-200 font-semibold"
-                    : "border-stone-100 dark:border-gray-700 bg-white dark:bg-gray-800 text-bark-700 dark:text-gray-300"
-                }`}>{l.flag} {l.label}</button>
-            ))}
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-2">{t("onboarding_city")}</label>
-          <input type="text" value={city} onChange={e => setCity(e.target.value)}
-            placeholder={t("onboarding_city_placeholder")} className="input-field"
-            onKeyDown={e => { if (e.key === "Enter" && city.trim()) { setLang(selectedLang); onDone(city.trim(), selectedLang); } }} />
-        </div>
-        <button onClick={() => { setLang(selectedLang); onDone(city.trim(), selectedLang); }}
-          disabled={!city.trim()} className="btn-primary w-full text-base disabled:opacity-50">
-          {t("onboarding_save")}
-        </button>
-      </div>
-    </div>
-  );
 }
 
 // ── Mini náhled záhonu – jen mřížka a název ───────────────────────────────────
@@ -118,7 +71,6 @@ export default function HomePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [plants, setPlants] = useState<Plant[]>([]);
   const [beds, setBeds] = useState<GardenBed[]>([]);
-  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -131,8 +83,7 @@ export default function HomePage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
     const { data: prof } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    if (!prof?.city) { setNeedsOnboarding(true); setLoading(false); return; }
-    setProfile(prof);
+    setProfile(prof ?? { id: user.id, email: user.email ?? "", city: "Praha", language: "en", created_at: new Date().toISOString() });
     const [{ data: userPlants }, { data: bedData }] = await Promise.all([
       supabase.from("plants").select("*").eq("user_id", user.id).order("added_at", { ascending: false }),
       supabase.from("garden_beds").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
@@ -154,14 +105,6 @@ export default function HomePage() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const handleOnboardingDone = async (city: string, language: Language) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("profiles").upsert({ id: user.id, email: user.email, city, language });
-    setProfile({ id: user.id, email: user.email ?? "", city, language, created_at: new Date().toISOString() });
-    setNeedsOnboarding(false);
-  };
-
   const handleAddPlant = async (plantId: string, name: string, emoji: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -181,7 +124,6 @@ export default function HomePage() {
       <div className="text-4xl animate-bounce">🌿</div>
     </div>
   );
-  if (needsOnboarding) return <Onboarding onDone={handleOnboardingDone} />;
 
   const plantsWithNames = plants.map(p => {
     const cat = PLANT_CATALOG.find(c => c.id === p.plant_id);
@@ -200,7 +142,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
-      <main className="flex-1 scrollable safe-top" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)" }}>
+      <main className="flex-1 scrollable safe-top" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 92px)" }}>
         <div className="max-w-lg mx-auto px-4 py-5 space-y-4">
 
           {/* Pozdrav */}

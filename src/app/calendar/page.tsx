@@ -32,7 +32,7 @@ export default function CalendarPage() {
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
       <main className="flex-1 scrollable safe-top"
-          style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)" }}>
+          style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 92px)" }}>
         <div className="max-w-lg mx-auto px-4 py-5">
           <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100 mb-5">{t("calendar_title")}</h1>
           {loading

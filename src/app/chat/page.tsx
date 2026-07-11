@@ -149,7 +149,7 @@ export default function ChatPage() {
         style={{
           // Spodní padding = výška navigace + safe area + input area
           // Aby poslední zpráva byla vidět celá nad vstupním polem
-          paddingBottom: `calc(${NAV_HEIGHT}px + env(safe-area-inset-bottom) + 80px)`,
+          paddingBottom: `calc(${NAV_HEIGHT}px + env(safe-area-inset-bottom) + 92px)`,
           WebkitOverflowScrolling: "touch",
           overscrollBehavior: "contain",
         }}

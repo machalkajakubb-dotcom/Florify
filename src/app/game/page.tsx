@@ -101,7 +101,7 @@ function formatTime(s: number): string {
 const DEFAULT_SHOP: ShopItems = { mole: false, adela_slot: null, pest_repellent_until: null, last_wheel_spin: null, boost_income_until: null };
 const BOOST_DURATION_SEC = 30 * 60; // Zlaté semínko: 30 minut 2x příjmu
 const DEFAULT_STATE: Omit<GameState, "last_active_at"> = {
-  currency: 0, unlocked_slots: 3, slots_data: [], shop: DEFAULT_SHOP, tutorial_done: false,
+  currency: 1000, unlocked_slots: 3, slots_data: [], shop: DEFAULT_SHOP, tutorial_done: false,
 };
 
 // ── Překlady ─────────────────────────────────────────────────────────────────
@@ -715,7 +715,7 @@ export default function GamePage() {
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setPlantModal(null)} />
           <div className="relative bg-white dark:bg-gray-900 rounded-t-3xl px-4 pt-4"
-            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 80px)" }}>
+            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 92px)" }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-display font-bold text-lg dark:text-gray-100">{t.seedModal}</h3>
               <button onClick={() => setPlantModal(null)} className="text-stone-400 text-xl">✕</button>
@@ -834,7 +834,7 @@ export default function GamePage() {
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShopOpen(false)} />
           <div className="relative bg-white dark:bg-gray-900 rounded-t-3xl px-4 pt-4"
-            style={{ maxHeight: "88vh", paddingBottom: "calc(env(safe-area-inset-bottom) + 80px)" }}>
+            style={{ maxHeight: "88vh", paddingBottom: "calc(env(safe-area-inset-bottom) + 92px)" }}>
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-display font-bold text-lg dark:text-gray-100">🛒 {t.shopTitle}</h3>
               <button onClick={() => setShopOpen(false)} className="text-stone-400 text-xl">✕</button>

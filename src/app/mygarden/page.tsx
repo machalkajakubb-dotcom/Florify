@@ -25,7 +25,7 @@ export default function MyGardenPage() {
   return (
     <div className="flex flex-col h-screen bg-stone-50 dark:bg-gray-950">
       <main className="flex-1 overflow-y-auto"
-        style={{ paddingTop:"calc(env(safe-area-inset-top) + 20px)", paddingBottom:"calc(env(safe-area-inset-bottom) + 80px)" }}>
+        style={{ paddingTop:"calc(env(safe-area-inset-top) + 20px)", paddingBottom:"calc(env(safe-area-inset-bottom) + 92px)" }}>
         <div className="max-w-lg mx-auto px-4 space-y-4">
           <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100 mb-6">{t.title}</h1>
           {items.map(item => (

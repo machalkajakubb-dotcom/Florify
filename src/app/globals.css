@@ -10,11 +10,36 @@ html {
   height: 100%;
   /* Zabrání bounce scrollu celé stránky na iOS */
   overscroll-behavior: none;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 body {
   height: 100%;
   overscroll-behavior: none;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
   /* BEZ overflow:hidden – to blokuje klávesnici v PWA na iOS */
+}
+
+/* ── Nativní pocit aplikace (ne webu) ───────────────────────────────────── */
+* {
+  -webkit-tap-highlight-color: transparent; /* zrušit modrý "flash" při kliknutí na mobilu */
+}
+button, a, [role="button"] {
+  touch-action: manipulation;   /* zrušit 300ms zpoždění kliku a dvojklik-zoom */
+  -webkit-touch-callout: none;  /* zrušit systémové kontextové menu při podržení */
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* Ale uvnitř textového obsahu (příspěvky, popisky) chceme jít vybrat text normálně */
+p, span, h1, h2, h3, textarea, input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+/* iOS automaticky přiblíží stránku, pokud má input font-size < 16px – tohle tomu zabrání */
+input, select, textarea {
+  font-size: 16px;
 }
 
 /* Safe area helpers */

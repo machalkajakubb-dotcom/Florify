@@ -24,7 +24,7 @@ interface LangCtx {
 }
 
 const LangContext = createContext<LangCtx>({
-  lang: "cs",
+  lang: "en",
   setLang: () => {},
   t: (k) => k,
   plantName: (id) => id,
@@ -48,13 +48,13 @@ export function LangProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("florify_lang", l);
   };
 
-  const dict = DICTS[lang] ?? DICTS["cs"];
-  const t = (key: string): string => dict[key] ?? DICTS["cs"][key] ?? key;
+  const dict = DICTS[lang] ?? DICTS["en"];
+  const t = (key: string): string => dict[key] ?? DICTS["en"][key] ?? key;
 
   const plantName = (id: string): string => {
     const plant = PLANT_CATALOG.find(p => p.id === id);
     if (!plant) return id;
-    return plant.names[lang] ?? plant.names["cs"] ?? id;
+    return plant.names[lang] ?? plant.names["en"] ?? id;
   };
 
   return (
