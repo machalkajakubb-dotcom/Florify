@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 // Navigace bez textů – jen ikony (7 sekcí)
 const NAV_ITEMS = [
   { href: "/",          icon: HomeIcon,      match: ["/"] },
-  { href: "/mygarden",  icon: GardenIcon,    match: ["/mygarden", "/garden", "/beds"] },
+  { href: "/mygarden",  icon: GardenIcon,    match: ["/mygarden", "/garden", "/beds", "/harvest"] },
   { href: "/calendar",  icon: CalIcon,       match: ["/calendar"] },
   { href: "/chat",      icon: ChatIcon,      match: ["/chat"] },
   { href: "/floribook", icon: FloriBookIcon, match: ["/floribook"] },

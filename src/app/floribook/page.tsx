@@ -98,7 +98,7 @@ function Avatar({ profile, size = 40 }: { profile: Profile; size?: number }) {
       style={{ width: size, height: size }} />;
   }
   const colors = ["bg-forest-400","bg-soil-400","bg-amber-400","bg-pink-400","bg-purple-400"];
-  const color = colors[profile.username?.charCodeAt(0) % colors.length ?? 0];
+  const color = colors[(profile.username?.charCodeAt(0) ?? 0) % colors.length];
   return (
     <div className={`${color} rounded-full flex items-center justify-center text-white font-bold flex-shrink-0`}
       style={{ width: size, height: size, fontSize: size * 0.35 }}>

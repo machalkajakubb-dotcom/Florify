@@ -26,6 +26,7 @@ interface ShopItems {
   adela_slot: number | null; // v jakém slotu sedí Adéla (-1 = nekoupena)
   pest_repellent_until: string | null; // timestamp dokdy platí odpuzovač
   last_wheel_spin: string | null; // timestamp posledního točení
+  boost_income_until: string | null; // timestamp dokdy platí 2x příjem (Zlaté semínko)
 }
 
 interface GameState {
@@ -97,7 +98,8 @@ function formatTime(s: number): string {
   return `${sec}s`;
 }
 
-const DEFAULT_SHOP: ShopItems = { mole: false, adela_slot: null, pest_repellent_until: null, last_wheel_spin: null };
+const DEFAULT_SHOP: ShopItems = { mole: false, adela_slot: null, pest_repellent_until: null, last_wheel_spin: null, boost_income_until: null };
+const BOOST_DURATION_SEC = 30 * 60; // Zlaté semínko: 30 minut 2x příjmu
 const DEFAULT_STATE: Omit<GameState, "last_active_at"> = {
   currency: 0, unlocked_slots: 3, slots_data: [], shop: DEFAULT_SHOP, tutorial_done: false,
 };
@@ -126,7 +128,7 @@ const TRANSLATIONS = {
     wheelSpin:"Spin!", wheelFree:"Free spin available!",
     wheelNext:"Next free spin in:", wheelBuy:"Buy spin for 300 🍃",
     wheelResult:"You won:", wheelClose:"Claim prize",
-    repellentActive:"🔕 Pest repellent active for:",
+    repellentActive:"🔕 Pest repellent active for:", boostActive:"⚡ 2x income boost active for:",
     tutTitle:"Welcome to FloriGarden! 🌱",
     tut1:"🌿 Plant seeds in the 3×3 grid",
     tut2:"⏱ Wait for plants to grow, then harvest for Freshness 🍃",
@@ -158,7 +160,7 @@ const TRANSLATIONS = {
     wheelSpin:"Točit!", wheelFree:"Zdarma k dispozici!",
     wheelNext:"Další točení zdarma za:", wheelBuy:"Koupit točení za 300 🍃",
     wheelResult:"Vyhráváš:", wheelClose:"Převzít cenu",
-    repellentActive:"🔕 Odpuzovač škůdců aktivní ještě:",
+    repellentActive:"🔕 Odpuzovač škůdců aktivní ještě:", boostActive:"⚡ 2x příjem aktivní ještě:",
     tutTitle:"Vítej ve FloriGarden! 🌱",
     tut1:"🌿 Zasaď semínka do mřížky 3×3",
     tut2:"⏱ Počkej až rostlina dozraje, pak sklidíš Svěžest 🍃",
@@ -190,7 +192,7 @@ const TRANSLATIONS = {
     wheelSpin:"Drehen!", wheelFree:"Kostenlose Drehung verfügbar!",
     wheelNext:"Nächste kostenlose Drehung in:", wheelBuy:"Drehung kaufen für 300 🍃",
     wheelResult:"Du hast gewonnen:", wheelClose:"Preis einfordern",
-    repellentActive:"🔕 Schädlingsabwehr aktiv noch:",
+    repellentActive:"🔕 Schädlingsabwehr aktiv noch:", boostActive:"⚡ 2x Einkommen aktiv noch:",
     tutTitle:"Willkommen bei FloriGarden! 🌱",
     tut1:"🌿 Pflanze Samen in das 3×3-Gitter",
     tut2:"⏱ Warte bis die Pflanze reift, dann ernten für Frische 🍃",
@@ -222,7 +224,7 @@ const TRANSLATIONS = {
     wheelSpin:"Kręć!", wheelFree:"Darmowe kręcenie dostępne!",
     wheelNext:"Następne darmowe kręcenie za:", wheelBuy:"Kup kręcenie za 300 🍃",
     wheelResult:"Wygrałeś:", wheelClose:"Odbierz nagrodę",
-    repellentActive:"🔕 Odpędzacz szkodników aktywny jeszcze:",
+    repellentActive:"🔕 Odpędzacz szkodników aktywny jeszcze:", boostActive:"⚡ 2x dochód aktywny jeszcze:",
     tutTitle:"Witaj w FloriGarden! 🌱",
     tut1:"🌿 Sadź nasionka w siatce 3×3",
     tut2:"⏱ Czekaj aż roślina dojrzeje, potem zbieraj Świeżość 🍃",
@@ -263,7 +265,12 @@ export default function GamePage() {
   const userIdRef = useRef<string | null>(null);
 
   // ── Celkový pasivní příjem ────────────────────────────────────────────────
+  function boostActive(g: GameState): boolean {
+    return g.shop.boost_income_until ? new Date(g.shop.boost_income_until).getTime() > Date.now() : false;
+  }
+
   function totalIncome(g: GameState): number {
+    const mult = boostActive(g) ? 2 : 1;
     return g.slots_data.reduce((acc, slot) => {
       if (slot.state === "weed" || slot.state === "snail" || slot.state === "adela") return acc;
       const p = PLANTS[slot.plant_type as PlantType];
@@ -272,7 +279,7 @@ export default function GamePage() {
       const matureAt = plantedAt + slot.grow_seconds * 1000;
       if (Date.now() < matureAt) return acc;
       return acc + p.income_per_sec * levelMult(slot.level);
-    }, 0);
+    }, 0) * mult;
   }
 
   // ── Adéla – pokud je v mřížce a objeví se škůdce, sežere ho ─────────────
@@ -401,9 +408,9 @@ export default function GamePage() {
   const doHarvest = (slot: SlotData) => {
     const p = PLANTS[slot.plant_type as PlantType];
     if (!p) return;
-    const val = Math.floor(p.harvest * levelMult(slot.level));
     setGame(prev => {
       if (!prev) return prev;
+      const val = Math.floor(p.harvest * levelMult(slot.level) * (boostActive(prev) ? 2 : 1));
       const newSlot: SlotData = { ...slot, planted_at: new Date().toISOString(), state: "growing" };
       return { ...prev, currency: prev.currency + val,
         slots_data: [...prev.slots_data.filter(s => s.slot_id !== slot.slot_id), newSlot] };
@@ -488,6 +495,11 @@ export default function GamePage() {
             g = { ...g, slots_data: slots };
           }
         }
+        if (prize.id === "golden_seed") {
+          const currentUntil = g.shop.boost_income_until ? new Date(g.shop.boost_income_until).getTime() : 0;
+          const base = Math.max(currentUntil, Date.now());
+          g = { ...g, shop: { ...g.shop, boost_income_until: new Date(base + BOOST_DURATION_SEC * 1000).toISOString() } };
+        }
         return g;
       });
     }, 2000);
@@ -550,6 +562,11 @@ export default function GamePage() {
         <div className="text-center">
           <p className="font-display font-bold text-sm leading-tight">{t.title}</p>
           {repellentActive && <p className="text-[10px] text-forest-300">{t.repellentActive} {formatTime(repellentSec)}</p>}
+          {boostActive(game) && game.shop.boost_income_until && (
+            <p className="text-[10px] text-amber-300 font-semibold">
+              {t.boostActive} {formatTime(Math.max(0, (new Date(game.shop.boost_income_until).getTime() - Date.now()) / 1000))}
+            </p>
+          )}
         </div>
         <div className="text-right">
           <div className="text-lg font-bold">{formatNum(game.currency)} 🍃</div>
@@ -642,7 +659,10 @@ export default function GamePage() {
             return (
               <button key={slotId}
                 onClick={() => mature ? doHarvest(slot) : setUpgradeSlot(slotId)}
-                onLongPress={() => setPlantModal(slotId)}
+                onContextMenu={(e) => {
+                  e.preventDefault(); // Zabrání vyskočení systémového menu v mobilu i na PC
+                  setPlantModal(slotId);
+                }}
                 className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 p-2 transition-all ${
                   mature ? "border-amber-400 bg-amber-50 dark:bg-amber-950 animate-pulse-soft"
                          : "border-forest-200 dark:border-forest-800 bg-white dark:bg-gray-900"

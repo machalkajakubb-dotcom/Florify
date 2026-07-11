@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Mobilní layout ──────────────────────────────────────────────────────── */
+/* DŮLEŽITÉ: overflow:hidden na html/body blokuje klávesnici v PWA na iOS!
+   Místo toho používáme flex layout – každá stránka má h-screen flex flex-col
+   a scrollovatelný obsah je uvnitř flex-1 */
+html {
+  height: 100%;
+  /* Zabrání bounce scrollu celé stránky na iOS */
+  overscroll-behavior: none;
+}
+body {
+  height: 100%;
+  overscroll-behavior: none;
+  /* BEZ overflow:hidden – to blokuje klávesnici v PWA na iOS */
+}
+
+/* Safe area helpers */
+.safe-top    { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* Scrollovatelný kontejner uvnitř stránek */
+.scrollable {
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.scrollable::-webkit-scrollbar { width: 4px; }
+.scrollable::-webkit-scrollbar-track { background: transparent; }
+.scrollable::-webkit-scrollbar-thumb { background: #c5e0b4; border-radius: 2px; }
+
+/* ── Animace ─────────────────────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-slide-up { animation: fadeSlideUp 0.3s ease both; }
+
+@keyframes pulse-soft {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.animate-pulse-soft { animation: pulse-soft 1.8s ease-in-out infinite; }
+
+.touch-target { min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
+
+/* ── Komponenty ──────────────────────────────────────────────────────────── */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-forest-600 hover:bg-forest-700 active:bg-forest-800
+           text-white font-semibold rounded-2xl px-5 py-3
+           transition-all duration-150 touch-target
+           shadow-md shadow-forest-200 dark:shadow-forest-900;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white dark:bg-gray-800
+           hover:bg-forest-50 dark:hover:bg-gray-700
+           text-forest-700 dark:text-forest-300 font-semibold rounded-2xl px-5 py-3
+           border border-stone-200 dark:border-gray-700
+           transition-all duration-150 touch-target;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-forest-700 dark:text-forest-300
+           hover:bg-forest-50 dark:hover:bg-gray-800
+           rounded-xl px-3 py-2 transition-all duration-150;
+  }
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-3xl
+           shadow-sm border border-stone-100 dark:border-gray-800 p-4;
+  }
+  .input-field {
+    @apply w-full bg-stone-50 dark:bg-gray-800
+           border border-stone-200 dark:border-gray-700 rounded-2xl
+           px-4 py-3 text-bark-900 dark:text-gray-100
+           placeholder:text-stone-400 dark:placeholder:text-gray-500
+           focus:outline-none focus:ring-2 focus:ring-forest-400 dark:focus:ring-forest-600
+           transition-all duration-150;
+  }
+}
+
+/* ── Dark mode pozadí ────────────────────────────────────────────────────── */
+.dark body, .dark .bg-gray-950 { background-color: #0f1a0f !important; }
+.dark .bg-gray-900              { background-color: #162316 !important; }
+.dark .bg-gray-800              { background-color: #1e2e1e !important; }
+.dark .border-gray-800          { border-color: #2a3d2a !important; }
+.dark .border-gray-700          { border-color: #354535 !important; }
