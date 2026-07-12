@@ -16,9 +16,31 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
+  const [mode, setMode] = useState<"auth" | "forgot">("auth");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError(t("auth_fill_email_first"));
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (err) throw err;
+      setSuccess(t("auth_reset_link_sent"));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Nastala neočekávaná chyba.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -39,8 +61,11 @@ export default function LoginPage() {
           email,
           password,
           options: {
-            // Zakáže email potvrzení – uživatel se přihlásí ihned
-            emailRedirectTo: undefined,
+            // Odkaz v ověřovacím e-mailu bude směřovat přesně tam, odkud se
+            // appka právě spouští (funguje jak na Vercelu, tak přes localhost
+            // při vývoji) – MUSÍ ale být zároveň v Supabase Dashboardu →
+            // Authentication → URL Configuration → Redirect URLs.
+            emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/login` : undefined,
           },
         });
 
@@ -105,28 +130,42 @@ export default function LoginPage() {
         )}
 
         {/* Přepínač */}
-        <div className="flex bg-garden-100 dark:bg-gray-800 rounded-2xl p-1">
-          <button
-            onClick={() => { setIsSignUp(false); setError(""); setSuccess(""); }}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
-              !isSignUp
-                ? "bg-white dark:bg-gray-700 text-garden-700 dark:text-garden-300 shadow-sm"
-                : "text-garden-500 dark:text-gray-400"
-            }`}
-          >
-            {t("auth_sign_in")}
-          </button>
-          <button
-            onClick={() => { setIsSignUp(true); setError(""); setSuccess(""); }}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
-              isSignUp
-                ? "bg-white dark:bg-gray-700 text-garden-700 dark:text-garden-300 shadow-sm"
-                : "text-garden-500 dark:text-gray-400"
-            }`}
-          >
-            {t("auth_sign_up")}
-          </button>
-        </div>
+        {mode === "auth" && (
+          <div className="flex bg-garden-100 dark:bg-gray-800 rounded-2xl p-1">
+            <button
+              onClick={() => { setIsSignUp(false); setError(""); setSuccess(""); }}
+              className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
+                !isSignUp
+                  ? "bg-white dark:bg-gray-700 text-garden-700 dark:text-garden-300 shadow-sm"
+                  : "text-garden-500 dark:text-gray-400"
+              }`}
+            >
+              {t("auth_sign_in")}
+            </button>
+            <button
+              onClick={() => { setIsSignUp(true); setError(""); setSuccess(""); }}
+              className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
+                isSignUp
+                  ? "bg-white dark:bg-gray-700 text-garden-700 dark:text-garden-300 shadow-sm"
+                  : "text-garden-500 dark:text-gray-400"
+              }`}
+            >
+              {t("auth_sign_up")}
+            </button>
+          </div>
+        )}
+
+        {mode === "forgot" && (
+          <div className="flex items-center gap-2">
+            <button onClick={() => { setMode("auth"); setError(""); setSuccess(""); }}
+              className="w-8 h-8 flex items-center justify-center rounded-full text-garden-700 dark:text-garden-300 active:bg-garden-100 dark:active:bg-gray-800">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <h2 className="font-semibold text-garden-800 dark:text-garden-300">{t("auth_reset_password_title")}</h2>
+          </div>
+        )}
 
         {/* Formulář */}
         <div className="space-y-3">
@@ -141,26 +180,36 @@ export default function LoginPage() {
               className="input-field"
               placeholder="vas@email.cz"
               autoComplete="email"
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              onKeyDown={(e) => e.key === "Enter" && (mode === "forgot" ? handleForgotPassword() : handleSubmit())}
             />
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-1">
-              {t("auth_password")}
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-field"
-              placeholder="min. 6 znaků"
-              autoComplete={isSignUp ? "new-password" : "current-password"}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            />
-            {isSignUp && (
-              <p className="text-xs text-garden-500 mt-1 ml-1">Heslo musí mít alespoň 6 znaků</p>
-            )}
-          </div>
+          {mode === "auth" && (
+            <div>
+              <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-1">
+                {t("auth_password")}
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="min. 6 znaků"
+                autoComplete={isSignUp ? "new-password" : "current-password"}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              />
+              {isSignUp && (
+                <p className="text-xs text-garden-500 mt-1 ml-1">Heslo musí mít alespoň 6 znaků</p>
+              )}
+              {!isSignUp && (
+                <button
+                  onClick={() => { setMode("forgot"); setError(""); setSuccess(""); }}
+                  className="text-xs text-garden-600 dark:text-garden-400 mt-1.5 ml-1 underline underline-offset-2"
+                >
+                  {t("auth_forgot_password")}
+                </button>
+              )}
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-2xl px-4 py-3 text-sm text-red-700 dark:text-red-400">
@@ -174,22 +223,37 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !email || !password}
-            className="btn-primary w-full text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                {t("loading")}
-              </span>
-            ) : isSignUp ? t("auth_sign_up") : t("auth_sign_in")}
-          </button>
+          {mode === "forgot" ? (
+            <button
+              onClick={handleForgotPassword}
+              disabled={loading || !email}
+              className="btn-primary w-full text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {t("loading")}
+                </span>
+              ) : t("auth_send_reset_link")}
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !email || !password}
+              className="btn-primary w-full text-base mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {t("loading")}
+                </span>
+              ) : isSignUp ? t("auth_sign_up") : t("auth_sign_in")}
+            </button>
+          )}
         </div>
 
         {/* Info o Supabase email confirm */}
-        {isSignUp && (
+        {mode === "auth" && isSignUp && (
           <p className="text-center text-xs text-garden-500 dark:text-gray-500 leading-relaxed">
             Po registraci vám může přijít ověřovací e-mail.<br />
             Pokud ne, zkuste se rovnou přihlásit.

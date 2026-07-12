@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import { useLang } from "@/hooks/useLang";
 import { Navigation } from "@/components/Navigation";
+import { BackButton } from "@/components/BackButton";
 import { PlantInfoModal } from "@/components/PlantInfoModal";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
 import type { GardenBed, BedCell, Plant } from "@/utils/supabaseClient";
@@ -80,7 +81,7 @@ function BedDetailModal({ bed, onClose, onEdit }: {
   const unique = [...new Map(plantedCells.map(c => [c.plant_id, c])).values()];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <div
         className="relative bg-white dark:bg-gray-900 rounded-3xl w-full max-w-sm shadow-2xl flex flex-col"
@@ -620,7 +621,10 @@ export default function BedsPage() {
       <main className="flex-1 scrollable safe-top" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 92px)" }}>
         <div className="max-w-lg mx-auto px-4 py-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">{t("beds_title")}</h1>
+            <div className="flex items-center gap-2">
+              <BackButton />
+              <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">{t("beds_title")}</h1>
+            </div>
             {beds.length >= 2 && (
               <button onClick={() => setShowCompare(true)}
                 className="text-xs text-forest-600 dark:text-forest-300 bg-forest-50 dark:bg-forest-950 border border-forest-100 dark:border-forest-900 px-3 py-1.5 rounded-xl hover:bg-forest-100 transition-colors">
@@ -690,7 +694,7 @@ export default function BedsPage() {
 
       {/* Confirm smazání */}
       {deleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteConfirm(null)} />
           <div className="relative bg-white dark:bg-gray-900 rounded-3xl p-6 max-w-xs w-full shadow-xl">
             <p className="text-center font-semibold mb-1 dark:text-gray-100">{t("beds_delete_confirm")}</p>

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import { Navigation } from "@/components/Navigation";
+import { BackButton } from "@/components/BackButton";
 import { useLang } from "@/hooks/useLang";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
 
@@ -104,7 +105,10 @@ export default function HarvestPage() {
         style={{ paddingTop:"calc(env(safe-area-inset-top) + 20px)", paddingBottom:"calc(env(safe-area-inset-bottom) + 92px)" }}>
         <div className="max-w-lg mx-auto px-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">{t.title}</h1>
+            <div className="flex items-center gap-2">
+              <BackButton />
+              <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">{t.title}</h1>
+            </div>
             <button onClick={() => setShowForm(true)} className="btn-primary text-sm px-4 py-2">{t.addBtn}</button>
           </div>
 
@@ -171,7 +175,7 @@ export default function HarvestPage() {
 
       {/* Formulář */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowForm(false)} />
           <div className="relative bg-white dark:bg-gray-900 rounded-t-3xl px-4 pt-4 space-y-3"
             style={{ paddingBottom:"calc(env(safe-area-inset-bottom) + 16px)" }}>

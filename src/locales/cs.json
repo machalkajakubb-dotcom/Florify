@@ -95,5 +95,10 @@
   "garden_plant": "rostlinu",
   "garden_plants_234": "rostliny",
   "garden_plants_5": "rostlin",
-  "nav_game": "Hra"
+  "nav_game": "Hra",
+  "auth_forgot_password": "Zapomenuté heslo?",
+  "auth_reset_password_title": "Obnovení hesla",
+  "auth_send_reset_link": "Poslat odkaz pro obnovení hesla",
+  "auth_reset_link_sent": "✅ Pokud tento e-mail existuje, poslali jsme na něj odkaz pro obnovení hesla.",
+  "auth_fill_email_first": "Nejdřív zadejte svůj e-mail nahoře, pak klikněte na odkaz znovu."
 }

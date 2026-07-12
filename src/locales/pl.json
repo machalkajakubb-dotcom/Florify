@@ -95,5 +95,10 @@
   "garden_plant": "roślinę",
   "garden_plants_234": "rośliny",
   "garden_plants_5": "roślin",
-  "nav_game": "Gra"
+  "nav_game": "Gra",
+  "auth_forgot_password": "Nie pamiętasz hasła?",
+  "auth_reset_password_title": "Resetowanie hasła",
+  "auth_send_reset_link": "Wyślij link do resetowania hasła",
+  "auth_reset_link_sent": "✅ Jeśli ten e-mail istnieje, wysłaliśmy na niego link do resetowania hasła.",
+  "auth_fill_email_first": "Najpierw wpisz swój e-mail powyżej, a potem kliknij link ponownie."
 }

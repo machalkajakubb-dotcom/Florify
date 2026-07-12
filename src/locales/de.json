@@ -95,5 +95,10 @@
   "garden_plant": "Pflanze",
   "garden_plants_234": "Pflanzen",
   "garden_plants_5": "Pflanzen",
-  "nav_game": "Spiel"
+  "nav_game": "Spiel",
+  "auth_forgot_password": "Passwort vergessen?",
+  "auth_reset_password_title": "Passwort zurücksetzen",
+  "auth_send_reset_link": "Link zum Zurücksetzen senden",
+  "auth_reset_link_sent": "✅ Falls diese E-Mail existiert, haben wir einen Link zum Zurücksetzen gesendet.",
+  "auth_fill_email_first": "Geben Sie oben zuerst Ihre E-Mail ein und klicken Sie dann erneut auf den Link."
 }

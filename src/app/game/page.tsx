@@ -712,7 +712,7 @@ export default function GamePage() {
 
       {/* ── Výběr semínka ─────────────────────────────────────────────── */}
       {plantModal !== null && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setPlantModal(null)} />
           <div className="relative bg-white dark:bg-gray-900 rounded-t-3xl px-4 pt-4"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 92px)" }}>
@@ -831,7 +831,7 @@ export default function GamePage() {
 
       {/* ── Obchod ────────────────────────────────────────────────────── */}
       {shopOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShopOpen(false)} />
           <div className="relative bg-white dark:bg-gray-900 rounded-t-3xl px-4 pt-4"
             style={{ maxHeight: "88vh", paddingBottom: "calc(env(safe-area-inset-bottom) + 92px)" }}>
