@@ -12,8 +12,8 @@ export const dynamic = "force-dynamic";
 // do ostrého provozu je vyplňte skutečnými údaji (jméno/firma provozovatele
 // a kontaktní e-mail pro žádosti o výmaz/přístup k datům dle GDPR).
 // ─────────────────────────────────────────────────────────────────────────
-const CONTROLLER_NAME = "[Modifive Studio]";
-const CONTROLLER_EMAIL = "[modifivestudio@gmail.com]";
+const CONTROLLER_NAME = "[SPRÁVCE JMÉNO / FIRMA]";
+const CONTROLLER_EMAIL = "[KONTAKTNÍ EMAIL]";
 
 const CONTENT = {
   en: {

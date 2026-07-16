@@ -1,6 +1,6 @@
-# 🌱 Florify – Chytrý zahradní asistent
+# 🌱 Florimy – Chytrý zahradní asistent
 
-Hyper-lokální, vícejazyčný AI asistent pro zahrádkáře. Postaveno na Next.js, Supabase a Claude AI.
+Hyper-lokální, vícejazyčný AI asistent pro zahrádkáře. Postaveno na Next.js, Supabase a Google Gemini.
 
 ---
 
@@ -50,14 +50,12 @@ npm install
 5. ⚠️ Klíč začne fungovat až za **~10 minut** po registraci
 6. Vložte jako `NEXT_PUBLIC_OPENWEATHER_API_KEY`
 
-### D) Anthropic API (AI botanička Flora) – PLACENÉ, ale má kredit zdarma
+### D) Google Gemini API (AI botanička Flora) – ZDARMA (v rámci limitů)
 
-1. Jděte na **https://console.anthropic.com**
-2. Registrujte se a přidejte platební kartu (dostanete $5 kredit zdarma)
-3. Klikněte na **"API Keys"** v levém menu
-4. Klikněte **"Create Key"**, dejte mu název (např. "florify")
-5. Zkopírujte klíč (začíná `sk-ant-...`) – **uložte ho hned, pak ho neuvidíte!**
-6. Vložte jako `ANTHROPIC_API_KEY`
+1. Jděte na **https://aistudio.google.com/apikey**
+2. Přihlaste se Google účtem a klikněte **"Create API key"**
+3. Zkopírujte klíč (začíná `AIzaSy...`)
+4. Vložte jako `GEMINI_API_KEY`
 
 ---
 
@@ -70,7 +68,7 @@ npm install
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJI...
 NEXT_PUBLIC_OPENWEATHER_API_KEY=abc123def456...
-ANTHROPIC_API_KEY=sk-ant-api03-...
+GEMINI_API_KEY=AIzaSy...
 ```
 
 ⚠️ **POZOR:** Soubor `.env.local` **NIKDY** nenahrávejte na GitHub! Je v `.gitignore`, takže by se tam nahrát neměl.
@@ -152,7 +150,7 @@ florify/
 → OpenWeather klíč funguje až 10 minut po registraci. Zatím se zobrazí mockovaná data.
 
 **Flora AI neodpovídá správně:**
-→ Zkontrolujte `ANTHROPIC_API_KEY`. Bez klíče funguje v demo režimu.
+→ Zkontrolujte `GEMINI_API_KEY`. Bez klíče funguje v demo režimu.
 
 **Na mobilu aplikace nevypadá jako mobilní appka:**
 → V Chrome klikněte na "Přidat na plochu" (tři tečky → Přidat na plochu). Pak se spustí v standalone módu bez adresního řádku.
