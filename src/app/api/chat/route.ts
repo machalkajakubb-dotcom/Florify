@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 
 // Explicitně vynutíme Node.js runtime (ne Edge) – @google/genai to potřebuje.
 export const runtime = "nodejs";
@@ -32,7 +32,16 @@ Aktuálně pěstuje: ${plantList}.
 Odpovídej v jazyce: ${lang}.
 Buď stručná, praktická a přátelská. Používej emoji střídmě (1-2 na zprávu).
 Vždy bery v úvahu roční období a místní podnebí.
-Nikdy nedávej nebezpečné rady ohledně chemikálií bez varování.`;
+Nikdy nedávej nebezpečné rady ohledně chemikálií bez varování.
+
+KRITICKY DŮLEŽITÉ – FORMÁT ODPOVĚDI:
+Odpověz VÝHRADNĚ finálním textem zprávy, kterou má uživatel uvidět v chatu – jako
+by ji Flora napsala přímo jemu. Nikdy nepiš svůj myšlenkový postup, plánování,
+"kroky" (např. "1. Understand the question", "Refining and shortening..."),
+nadpisy, ani žádné meta-komentáře o tom, jak odpověď sestavuješ. Nezačínej
+odpověď žádným úvodem typu "Dobře, tady je odpověď:" – rovnou piš to, co by
+Flora řekla. Odpověď musí být krátká (ideálně 2–4 věty) a nesmí být uprostřed
+uťatá – pokud je téma širší, radši ho zestruč, než abys odpověď nedokončil/a.`;
 
   try {
     const ai = new GoogleGenAI({ apiKey });
@@ -49,7 +58,18 @@ Nikdy nedávej nebezpečné rady ohledně chemikálií bez varování.`;
       contents,
       config: {
         systemInstruction: systemPrompt,
-        maxOutputTokens: 600,
+        // 1000 tokenů na SAMOTNOU odpověď – dřívějších 600 nestačilo, protože
+        // si model bere tokeny navíc i na interní "přemýšlení" (thinking),
+        // takže na finální text pak zbyl jen zlomek limitu a odpověď se uťala.
+        maxOutputTokens: 1000,
+        // Gemini 3.x model má ve výchozím stavu zapnuté "thinking" (interní
+        // uvažování před odpovědí), které umí prosakovat i do výstupu jako
+        // viditelné kroky typu "Refining and shortening...". Pro jednoduchý
+        // konverzační chat ho nepotřebujeme – vypneme/omezíme na minimum.
+        thinkingConfig: {
+          thinkingLevel: ThinkingLevel.MINIMAL,
+          includeThoughts: false,
+        },
       },
     });
 
