@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/utils/supabaseClient";
 import { useLang } from "@/hooks/useLang";
@@ -12,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { t } = useLang();
+  const { t, lang, setLang } = useLang();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
@@ -20,6 +21,31 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    // Když uživatel klikne na ověřovací odkaz z e-mailu, Supabase klient
+    // automaticky (detectSessionInUrl) zpracuje token a rovnou vytvoří
+    // přihlášenou session – bez tohohle efektu by ale stránka pořád
+    // ukazovala přihlašovací formulář, jako by se nic nestalo.
+    let active = true;
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN") router.push("/");
+    });
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      if (data.session) { router.push("/"); return; }
+      setCheckingSession(false);
+    });
+    return () => { active = false; sub.subscription.unsubscribe(); };
+  }, [router]);
+
+  const langs: { code: "en" | "cs" | "de" | "pl"; flag: string; label: string }[] = [
+    { code: "en", flag: "🇬🇧", label: "EN" },
+    { code: "cs", flag: "🇨🇿", label: "CS" },
+    { code: "de", flag: "🇩🇪", label: "DE" },
+    { code: "pl", flag: "🇵🇱", label: "PL" },
+  ];
 
   const handleForgotPassword = async () => {
     if (!email) {
@@ -115,13 +141,33 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-garden-50 dark:from-gray-950 to-white dark:to-gray-900 flex flex-col items-center justify-center px-6 safe-top safe-bottom">
       <div className="w-full max-w-sm space-y-6 animate-fade-slide-up">
+        {/* Přepínač jazyka – vždy dostupný, i před přihlášením */}
+        <div className="flex justify-center gap-2">
+          {langs.map(l => (
+            <button key={l.code} onClick={() => setLang(l.code)}
+              className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
+                lang === l.code
+                  ? "border-garden-500 bg-garden-50 dark:bg-garden-950 text-garden-800 dark:text-garden-300"
+                  : "border-stone-200 dark:border-gray-700 text-stone-400 dark:text-gray-500"
+              }`}>
+              {l.flag} {l.label}
+            </button>
+          ))}
+        </div>
+
         {/* Logo */}
         <div className="text-center">
           <div className="text-6xl mb-3">🌱</div>
-          <h1 className="font-display text-3xl font-bold text-garden-800 dark:text-garden-300">Florify</h1>
+          <h1 className="font-display text-3xl font-bold text-garden-800 dark:text-garden-300">Florimy</h1>
           <p className="text-garden-600 dark:text-garden-400 mt-1 text-sm">{t("tagline")}</p>
         </div>
 
+        {checkingSession ? (
+          <div className="flex justify-center py-8">
+            <span className="w-6 h-6 border-2 border-garden-300 border-t-garden-600 rounded-full animate-spin" />
+          </div>
+        ) : (
+        <>
         {/* Varování při chybějící konfiguraci Supabase */}
         {!isSupabaseConfigured && (
           <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-2xl px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
@@ -252,17 +298,22 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* Info o Supabase email confirm */}
+        {/* Info o Supabase email confirm + souhlas s právními podmínkami */}
         {mode === "auth" && isSignUp && (
           <p className="text-center text-xs text-garden-500 dark:text-gray-500 leading-relaxed">
-            Po registraci vám může přijít ověřovací e-mail.<br />
-            Pokud ne, zkuste se rovnou přihlásit.
+            {t("legal_consent_1")}
+            <Link href="/privacy-policy" className="underline underline-offset-2">{t("legal_privacy_policy")}</Link>
+            {t("legal_consent_2")}
+            <Link href="/terms" className="underline underline-offset-2">{t("legal_terms")}</Link>
+            {t("legal_consent_3")}
           </p>
         )}
 
         <div className="flex justify-center gap-4 text-2xl opacity-30">
           🍅🥕🥒🌿🍓
         </div>
+        </>
+        )}
       </div>
     </div>
   );

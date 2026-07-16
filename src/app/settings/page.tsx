@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import { useLang } from "@/hooks/useLang";
@@ -53,13 +54,17 @@ function DeleteAccountModal({ onClose, lang }: { onClose: () => void; lang: Lang
     setLoading(true);
     setError("");
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not logged in");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not logged in");
 
-      // Smazání dat z DB (cascade smaže vše)
-      await supabase.from("profiles").delete().eq("id", user.id);
+      const res = await fetch("/api/delete-account", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error ?? "Chyba při mazání účtu.");
 
-      // Odhlášení
+      // Odhlášení (účet už na serveru neexistuje, jen uklidíme lokální session)
       await supabase.auth.signOut();
       router.push("/login");
     } catch (e: unknown) {
@@ -216,7 +221,7 @@ export default function SettingsPage() {
 
             {/* Sociální sítě */}
             <section className="card">
-              <h2 className="text-xs font-semibold text-stone-400 dark:text-gray-500 uppercase tracking-wide mb-3">📱 Florify online</h2>
+              <h2 className="text-xs font-semibold text-stone-400 dark:text-gray-500 uppercase tracking-wide mb-3">📱 Florimy online</h2>
               <div className="space-y-1">
                 {SOCIAL.map(({ name, href, color, Icon }) => (
                   <a key={name} href={href} target="_blank" rel="noopener noreferrer"
@@ -246,7 +251,24 @@ export default function SettingsPage() {
               </button>
             </section>
 
-            <p className="text-center text-xs text-stone-300 dark:text-gray-700 pb-2">Florify v0.1.0 · Made with 🌱</p>
+            {/* Právní informace */}
+            <section className="card">
+              <h2 className="text-xs font-semibold text-stone-400 dark:text-gray-500 uppercase tracking-wide mb-3">{t("settings_legal")}</h2>
+              <div className="space-y-1">
+                <Link href="/privacy-policy"
+                  className="flex items-center justify-between py-2 text-sm text-bark-700 dark:text-gray-300 hover:text-forest-600 dark:hover:text-forest-400 transition-colors">
+                  {t("legal_privacy_policy")}
+                  <span className="text-stone-300 dark:text-gray-600">›</span>
+                </Link>
+                <Link href="/terms"
+                  className="flex items-center justify-between py-2 text-sm text-bark-700 dark:text-gray-300 hover:text-forest-600 dark:hover:text-forest-400 transition-colors">
+                  {t("legal_terms")}
+                  <span className="text-stone-300 dark:text-gray-600">›</span>
+                </Link>
+              </div>
+            </section>
+
+            <p className="text-center text-xs text-stone-300 dark:text-gray-700 pb-2">Florimy v0.1.0 · Made with 🌱</p>
           </>)}
         </div>
       </main>

@@ -1,11 +1,11 @@
 {
-  "app_name": "Florify",
+  "app_name": "Florimy",
   "tagline": "Váš chytrý zahradní asistent",
   "nav_home": "Domů",
   "nav_garden": "Zahrada",
   "nav_calendar": "Kalendář",
   "nav_chat": "Flora AI",
-  "welcome_title": "Vítejte ve Florify!",
+  "welcome_title": "Vítejte ve Florimy!",
   "welcome_subtitle": "Nastavte svou zahradu za 30 sekund.",
   "onboarding_city": "Vaše město nebo obec",
   "onboarding_city_placeholder": "např. Praha, Brno, Plzeň...",
@@ -100,5 +100,16 @@
   "auth_reset_password_title": "Obnovení hesla",
   "auth_send_reset_link": "Poslat odkaz pro obnovení hesla",
   "auth_reset_link_sent": "✅ Pokud tento e-mail existuje, poslali jsme na něj odkaz pro obnovení hesla.",
-  "auth_fill_email_first": "Nejdřív zadejte svůj e-mail nahoře, pak klikněte na odkaz znovu."
+  "auth_fill_email_first": "Nejdřív zadejte svůj e-mail nahoře, pak klikněte na odkaz znovu.",
+  "legal_consent_1": "Registrací souhlasíte s našimi ",
+  "legal_privacy_policy": "Zásadami ochrany osobních údajů",
+  "legal_consent_2": " a ",
+  "legal_terms": "Podmínkami užití",
+  "legal_consent_3": ".",
+  "settings_legal": "Právní informace",
+  "confirm_delete_title": "Opravdu smazat?",
+  "confirm_delete_message": "Tuto akci nelze vzít zpět.",
+  "confirm_delete_yes": "Smazat",
+  "confirm_delete_no": "Zrušit",
+  "harvest_date": "Datum"
 }

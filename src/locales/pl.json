@@ -1,11 +1,11 @@
 {
-  "app_name": "Florify",
+  "app_name": "Florimy",
   "tagline": "Twój inteligentny asystent ogrodnika",
   "nav_home": "Strona główna",
   "nav_garden": "Ogród",
   "nav_calendar": "Kalendarz",
   "nav_chat": "Flora AI",
-  "welcome_title": "Witaj w Florify!",
+  "welcome_title": "Witaj w Florimy!",
   "welcome_subtitle": "Skonfiguruj swój ogród w 30 sekund.",
   "onboarding_city": "Twoje miasto lub miejscowość",
   "onboarding_city_placeholder": "np. Warszawa, Kraków...",
@@ -100,5 +100,16 @@
   "auth_reset_password_title": "Resetowanie hasła",
   "auth_send_reset_link": "Wyślij link do resetowania hasła",
   "auth_reset_link_sent": "✅ Jeśli ten e-mail istnieje, wysłaliśmy na niego link do resetowania hasła.",
-  "auth_fill_email_first": "Najpierw wpisz swój e-mail powyżej, a potem kliknij link ponownie."
+  "auth_fill_email_first": "Najpierw wpisz swój e-mail powyżej, a potem kliknij link ponownie.",
+  "legal_consent_1": "Rejestrując się, akceptujesz naszą ",
+  "legal_privacy_policy": "Politykę Prywatności",
+  "legal_consent_2": " oraz ",
+  "legal_terms": "Regulamin",
+  "legal_consent_3": ".",
+  "settings_legal": "Informacje prawne",
+  "confirm_delete_title": "Na pewno usunąć?",
+  "confirm_delete_message": "Tej czynności nie można cofnąć.",
+  "confirm_delete_yes": "Usuń",
+  "confirm_delete_no": "Anuluj",
+  "harvest_date": "Data"
 }

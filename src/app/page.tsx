@@ -149,7 +149,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-forest-600 dark:text-forest-400 font-medium">{greeting()} 👋</p>
-              <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">Florify 🌱</h1>
+              <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100">Florimy 🌱</h1>
             </div>
             <button onClick={() => supabase.auth.signOut().then(() => router.push("/login"))}
               className="text-xs text-stone-400 hover:text-red-500 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950 transition-colors">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import { Navigation } from "@/components/Navigation";
 import { BackButton } from "@/components/BackButton";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useLang } from "@/hooks/useLang";
 import { PLANT_CATALOG } from "@/utils/plantCatalog";
 
@@ -23,16 +24,20 @@ interface HarvestEntry {
 const T = {
   en: { title:"Harvest Log", addBtn:"Log Harvest", season:"Season", total:"Total", unit_kg:"kg", unit_ks:"pcs",
         selectPlant:"Select plant", amount:"Amount", note:"Note (optional)", save:"Save", cancel:"Cancel",
-        empty:"No harvest entries yet. Start tracking your yield!", noPlants:"Add plants to your garden first." },
+        empty:"No harvest entries yet. Start tracking your yield!", noPlants:"Add plants to your garden first.",
+        confirmDeleteTitle:"Delete this entry?", confirmDeleteMessage:"This action cannot be undone.", confirmDeleteYes:"Delete", confirmDeleteNo:"Cancel", dateLabel:"Date" },
   cs: { title:"Sklizeň", addBtn:"Zaznamenat sklizeň", season:"Sezona", total:"Celkem", unit_kg:"kg", unit_ks:"ks",
         selectPlant:"Vyber rostlinu", amount:"Množství", note:"Poznámka (volitelně)", save:"Uložit", cancel:"Zrušit",
-        empty:"Zatím žádné záznamy. Začni sledovat svou úrodu!", noPlants:"Nejdřív přidej rostliny do zahrady." },
+        empty:"Zatím žádné záznamy. Začni sledovat svou úrodu!", noPlants:"Nejdřív přidej rostliny do zahrady.",
+        confirmDeleteTitle:"Opravdu smazat záznam?", confirmDeleteMessage:"Tuto akci nelze vzít zpět.", confirmDeleteYes:"Smazat", confirmDeleteNo:"Zrušit", dateLabel:"Datum" },
   de: { title:"Ernte-Log", addBtn:"Ernte eintragen", season:"Saison", total:"Gesamt", unit_kg:"kg", unit_ks:"Stk",
         selectPlant:"Pflanze wählen", amount:"Menge", note:"Notiz (optional)", save:"Speichern", cancel:"Abbrechen",
-        empty:"Noch keine Einträge. Beginne deine Ernte zu verfolgen!", noPlants:"Füge zuerst Pflanzen hinzu." },
+        empty:"Noch keine Einträge. Beginne deine Ernte zu verfolgen!", noPlants:"Füge zuerst Pflanzen hinzu.",
+        confirmDeleteTitle:"Eintrag wirklich löschen?", confirmDeleteMessage:"Diese Aktion kann nicht rückgängig gemacht werden.", confirmDeleteYes:"Löschen", confirmDeleteNo:"Abbrechen", dateLabel:"Datum" },
   pl: { title:"Dziennik Zbiorów", addBtn:"Zapisz zbiory", season:"Sezon", total:"Łącznie", unit_kg:"kg", unit_ks:"szt",
         selectPlant:"Wybierz roślinę", amount:"Ilość", note:"Notatka (opcjonalnie)", save:"Zapisz", cancel:"Anuluj",
-        empty:"Brak wpisów. Zacznij śledzić swoje zbiory!", noPlants:"Najpierw dodaj rośliny do ogrodu." },
+        empty:"Brak wpisów. Zacznij śledzić swoje zbiory!", noPlants:"Najpierw dodaj rośliny do ogrodu.",
+        confirmDeleteTitle:"Na pewno usunąć wpis?", confirmDeleteMessage:"Tej czynności nie można cofnąć.", confirmDeleteYes:"Usuń", confirmDeleteNo:"Anuluj", dateLabel:"Data" },
 };
 
 export default function HarvestPage() {
@@ -87,6 +92,12 @@ export default function HarvestPage() {
   const handleDelete = async (id: string) => {
     await supabase.from("harvests").delete().eq("id", id);
     setEntries(prev => prev.filter(e => e.id !== id));
+  };
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  const formatDate = (iso: string) => {
+    const localeMap: Record<string, string> = { cs: "cs-CZ", en: "en-GB", de: "de-DE", pl: "pl-PL" };
+    return new Date(iso).toLocaleDateString(localeMap[lang] ?? "en-GB", { day: "numeric", month: "short", year: "numeric" });
   };
 
   // Group by season
@@ -153,7 +164,7 @@ export default function HarvestPage() {
                 {/* Jednotlivé záznamy */}
                 <div className="space-y-2">
                   {seasonEntries.map(e => (
-                    <div key={e.id} className="card flex items-center gap-3 py-3 group">
+                    <div key={e.id} className="card flex items-center gap-3 py-3">
                       <span className="text-2xl flex-shrink-0">{e.plant_emoji}</span>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm text-bark-900 dark:text-gray-100">{e.plant_name}</p>
@@ -161,9 +172,10 @@ export default function HarvestPage() {
                           <span className="font-bold text-forest-600 dark:text-forest-400">{e.amount} {e.unit === "kg" ? t.unit_kg : t.unit_ks}</span>
                           {e.note && <> · {e.note}</>}
                         </p>
+                        <p className="text-[11px] text-stone-300 dark:text-gray-600 mt-0.5">{formatDate(e.harvested_at)}</p>
                       </div>
-                      <button onClick={() => handleDelete(e.id)}
-                        className="w-7 h-7 rounded-full bg-red-50 dark:bg-red-950 text-red-400 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                      <button onClick={() => setPendingDelete(e.id)}
+                        className="w-7 h-7 rounded-full bg-red-50 dark:bg-red-950 text-red-400 text-xs flex items-center justify-center flex-shrink-0">✕</button>
                     </div>
                   ))}
                 </div>
@@ -212,6 +224,15 @@ export default function HarvestPage() {
         </div>
       )}
       <Navigation />
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title={t.confirmDeleteTitle}
+        message={t.confirmDeleteMessage}
+        confirmLabel={t.confirmDeleteYes}
+        cancelLabel={t.confirmDeleteNo}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => { if (pendingDelete) handleDelete(pendingDelete); setPendingDelete(null); }}
+      />
     </div>
   );
 }

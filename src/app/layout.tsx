@@ -5,10 +5,10 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { SplashScreen } from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
-  title: "Florify – Chytrý zahradní asistent",
-  description: "Hyper-lokální AI asistent pro zahrádkáře. Počasí, záhony, kalendář, chat s Florou.",
+  title: "Florimy – Your Smart Garden Assistant",
+  description: "Hyper-local AI assistant for gardeners. Weather, garden beds, calendar, chat with Flora.",
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Florify" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Florimy" },
   formatDetection: { telephone: false },
   icons: {
     icon: [
@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="cs" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="icon" href="/favicon.ico" sizes="any" />

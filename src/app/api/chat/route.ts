@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
   const plantList = (plants as string[]).join(", ") || "žádné zatím";
 
-  const systemPrompt = `Jsi Flora, přátelská a znalá AI botanička pro aplikaci Florify.
+  const systemPrompt = `Jsi Flora, přátelská a znalá AI botanička pro aplikaci Florimy.
 Uživatel žije v: ${city}.
 Aktuálně pěstuje: ${plantList}.
 Odpovídej v jazyce: ${lang}.

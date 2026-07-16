@@ -824,6 +824,12 @@ export default function GamePage() {
                 <button onClick={() => setUpgradeSlot(null)} className="btn-secondary flex-1 py-2 text-sm">{t.close}</button>
                 <button onClick={() => doUpgrade(slot)} disabled={!canAfford} className="btn-primary flex-1 py-2 text-sm disabled:opacity-40">{t.upgrade}</button>
               </div>
+              <button
+                onClick={() => { setUpgradeSlot(null); setPlantModal(upgradeSlot); }}
+                className="w-full mt-2 py-2 rounded-2xl border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-sm font-semibold hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors"
+              >
+                🔄 {t.replaceBtn}
+              </button>
             </div>
           </div>
         );

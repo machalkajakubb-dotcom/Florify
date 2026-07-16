@@ -29,9 +29,9 @@ export function SplashScreen() {
       style={{ opacity: fadeOut ? 0 : 1, transition: "opacity 0.5s ease", pointerEvents: "none" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/icons/icon-192x192.png" alt="Florify" width={140} height={140}
+      <img src="/icons/icon-192x192.png" alt="Florimy" width={140} height={140}
         style={{ borderRadius: "32px" }} className="shadow-xl mb-5" />
-      <h1 className="font-display text-3xl font-bold text-forest-700 dark:text-forest-300">Florify</h1>
+      <h1 className="font-display text-3xl font-bold text-forest-700 dark:text-forest-300">Florimy</h1>
       <p className="text-sm text-stone-400 mt-1">{TAGLINES[lang] ?? TAGLINES["en"]}</p>
       <div className="flex gap-1.5 mt-6">
         {[0, 200, 400].map(d => (

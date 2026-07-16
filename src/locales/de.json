@@ -1,11 +1,11 @@
 {
-  "app_name": "Florify",
+  "app_name": "Florimy",
   "tagline": "Ihr smarter Gartenassistent",
   "nav_home": "Start",
   "nav_garden": "Garten",
   "nav_calendar": "Kalender",
   "nav_chat": "Flora KI",
-  "welcome_title": "Willkommen bei Florify!",
+  "welcome_title": "Willkommen bei Florimy!",
   "welcome_subtitle": "Richten Sie Ihren Garten in 30 Sekunden ein.",
   "onboarding_city": "Ihre Stadt oder Gemeinde",
   "onboarding_city_placeholder": "z.B. Berlin, München...",
@@ -100,5 +100,16 @@
   "auth_reset_password_title": "Passwort zurücksetzen",
   "auth_send_reset_link": "Link zum Zurücksetzen senden",
   "auth_reset_link_sent": "✅ Falls diese E-Mail existiert, haben wir einen Link zum Zurücksetzen gesendet.",
-  "auth_fill_email_first": "Geben Sie oben zuerst Ihre E-Mail ein und klicken Sie dann erneut auf den Link."
+  "auth_fill_email_first": "Geben Sie oben zuerst Ihre E-Mail ein und klicken Sie dann erneut auf den Link.",
+  "legal_consent_1": "Mit der Registrierung stimmen Sie unserer ",
+  "legal_privacy_policy": "Datenschutzerklärung",
+  "legal_consent_2": " und unseren ",
+  "legal_terms": "Nutzungsbedingungen",
+  "legal_consent_3": " zu.",
+  "settings_legal": "Rechtliches",
+  "confirm_delete_title": "Wirklich löschen?",
+  "confirm_delete_message": "Diese Aktion kann nicht rückgängig gemacht werden.",
+  "confirm_delete_yes": "Löschen",
+  "confirm_delete_no": "Abbrechen",
+  "harvest_date": "Datum"
 }
