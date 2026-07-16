@@ -4,7 +4,10 @@ import { GoogleGenAI } from "@google/genai";
 // Explicitně vynutíme Node.js runtime (ne Edge) – @google/genai to potřebuje.
 export const runtime = "nodejs";
 
-const MODEL = "gemini-2.5-flash";
+// gemini-3.5-flash je (červenec 2026) aktuální stabilní Flash model.
+// gemini-2.5-flash byl vyřazen pro nové uživatele.
+// Levnější/rychlejší alternativa s trochu nižší kvalitou: "gemini-3.1-flash-lite".
+const MODEL = "gemini-3.5-flash";
 
 export async function POST(req: NextRequest) {
   const { messages, city, plants, lang } = await req.json();
