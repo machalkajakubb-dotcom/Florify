@@ -257,12 +257,12 @@ export default function SettingsPage() {
               <div className="space-y-1">
                 <Link href="/privacy-policy"
                   className="flex items-center justify-between py-2 text-sm text-bark-700 dark:text-gray-300 hover:text-forest-600 dark:hover:text-forest-400 transition-colors">
-                  {t("legal_privacy_policy")}
+                  {t("legal_privacy_policy_link")}
                   <span className="text-stone-300 dark:text-gray-600">›</span>
                 </Link>
                 <Link href="/terms"
                   className="flex items-center justify-between py-2 text-sm text-bark-700 dark:text-gray-300 hover:text-forest-600 dark:hover:text-forest-400 transition-colors">
-                  {t("legal_terms")}
+                  {t("legal_terms_link")}
                   <span className="text-stone-300 dark:text-gray-600">›</span>
                 </Link>
               </div>

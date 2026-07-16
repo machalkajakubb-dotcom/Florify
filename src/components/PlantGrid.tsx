@@ -97,7 +97,7 @@ export function PlantGrid({ plants, onAdd, onRemove, maxVisible, showViewAll, on
       )}
 
       {/* Přidat rostlinu */}
-      <button onClick={() => setShowModal(true)} className="mt-4 w-full btn-secondary border-dashed">
+      <button onClick={() => setShowModal(true)} className="mt-4 w-full btn-primary">
         <span className="text-lg">+</span> {t("dashboard_add_plant")}
       </button>
 

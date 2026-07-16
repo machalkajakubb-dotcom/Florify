@@ -16,7 +16,7 @@
   "dashboard_greeting_evening": "Dobrý večer",
   "dashboard_weather_loading": "Načítám počasí...",
   "dashboard_ai_tip": "Tip dne od Flory",
-  "dashboard_my_garden": "Moje zahrada",
+  "dashboard_my_garden": "Moje rostliny",
   "dashboard_add_plant": "Přidat rostlinu",
   "dashboard_no_plants": "Zatím žádné rostliny. Přidejte první!",
   "plant_add_title": "Přidat rostlinu",
@@ -111,5 +111,13 @@
   "confirm_delete_message": "Tuto akci nelze vzít zpět.",
   "confirm_delete_yes": "Smazat",
   "confirm_delete_no": "Zrušit",
-  "harvest_date": "Datum"
+  "harvest_date": "Datum",
+  "beds_year_label": "Rok",
+  "beds_year_future": "naplánováno",
+  "chat_image_default_prompt": "Co mi řekneš k téhle fotce?",
+  "chat_image_error_type": "Vyberte prosím obrázek.",
+  "chat_image_ready": "Fotka připravena k odeslání",
+  "chat_add_photo": "Přidat fotku",
+  "legal_privacy_policy_link": "Zásady ochrany osobních údajů",
+  "legal_terms_link": "Podmínky užití"
 }

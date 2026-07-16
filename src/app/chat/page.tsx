@@ -13,7 +13,7 @@ import type { Plant, UserProfile } from "@/utils/supabaseClient";
 // statického prerenderingu na buildu kvůli chybějícím env proměnným.
 export const dynamic = "force-dynamic";
 
-interface Message { id: string; role: "user" | "assistant"; content: string; ts: number; }
+interface Message { id: string; role: "user" | "assistant"; content: string; ts: number; image?: string; }
 
 const QUICK: Record<string, string[]> = {
   cs: ["Kdy zalít rajčata?", "Jaký hnůj je nejlepší?", "Jak bojovat s mšicemi?", "Co sázet tento měsíc?"],
@@ -31,6 +31,7 @@ export default function ChatPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [plants, setPlants] = useState<Plant[]>([]);
@@ -39,6 +40,8 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [infoPlantId, setInfoPlantId] = useState<string | null>(null);
+  const [pendingImage, setPendingImage] = useState<{ previewUrl: string; base64: string; mimeType: string } | null>(null);
+  const [imageError, setImageError] = useState("");
 
   const init = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -64,23 +67,35 @@ export default function ChatPage() {
 
   const sendMessage = async () => {
     const text = input.trim();
-    if (!text || loading) return;
-    const userMsg: Message = { id: `u-${Date.now()}`, role: "user", content: text, ts: Date.now() };
+    if ((!text && !pendingImage) || loading) return;
+    const finalText = text || t("chat_image_default_prompt");
+    const userMsg: Message = {
+      id: `u-${Date.now()}`, role: "user", content: finalText, ts: Date.now(),
+      image: pendingImage?.previewUrl,
+    };
+    const imageToSend = pendingImage;
     setMessages(prev => [...prev, userMsg]);
     setInput("");
+    setPendingImage(null);
     setLoading(true);
     try {
       const history = [...messages.filter(m => m.id !== "welcome"), userMsg].map(m => ({ role: m.role, content: m.content }));
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history, city: profile?.city ?? "neznámé", plants: plants.map(p => `${p.emoji} ${p.name}`), lang }),
+        body: JSON.stringify({
+          messages: history,
+          city: profile?.city ?? "neznámé",
+          plants: plants.map(p => `${p.emoji} ${p.name}`),
+          lang,
+          image: imageToSend ? { mimeType: imageToSend.mimeType, data: imageToSend.base64 } : undefined,
+        }),
       });
       const data = await res.json();
       setMessages(prev => [...prev, { id: `b-${Date.now()}`, role: "assistant", content: data.content, ts: Date.now() }]);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) await supabase.from("chat_messages").insert([
-        { user_id: user.id, role: "user", content: text },
+        { user_id: user.id, role: "user", content: finalText },
         { user_id: user.id, role: "assistant", content: data.content },
       ]);
     } catch {
@@ -89,6 +104,43 @@ export default function ChatPage() {
       setLoading(false);
       inputRef.current?.focus();
     }
+  };
+
+  // Zmenší fotku z mobilu (klidně 10+ MB) na rozumnou velikost před odesláním,
+  // ať to nespadne na limitu velikosti requestu a zbytečně to nestojí tokeny.
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // reset, ať jde vybrat i stejný soubor znovu
+    if (!file) return;
+    setImageError("");
+    if (!file.type.startsWith("image/")) {
+      setImageError(t("chat_image_error_type"));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX_DIM = 1024;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          const scale = MAX_DIM / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+        const base64 = dataUrl.split(",")[1] ?? "";
+        setPendingImage({ previewUrl: dataUrl, base64, mimeType: "image/jpeg" });
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   };
 
   if (!initialized) return (
@@ -164,6 +216,10 @@ export default function ChatPage() {
                 ? "bg-forest-600 text-white rounded-br-sm"
                 : "bg-white dark:bg-gray-900 text-bark-900 dark:text-gray-100 rounded-bl-sm border border-stone-100 dark:border-gray-800"
             }`}>
+              {msg.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={msg.image} alt="" className="rounded-2xl mb-2 max-h-48 w-auto object-cover" />
+              )}
               {msg.content}
             </div>
           </div>
@@ -208,8 +264,42 @@ export default function ChatPage() {
           </div>
         )}
 
+        {/* Náhled vybrané fotky před odesláním */}
+        {pendingImage && (
+          <div className="px-4 pt-3 flex items-center gap-2">
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={pendingImage.previewUrl} alt="" className="w-14 h-14 rounded-xl object-cover border border-stone-200 dark:border-gray-700" />
+              <button
+                onClick={() => setPendingImage(null)}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-stone-700 dark:bg-gray-600 text-white text-xs flex items-center justify-center"
+              >✕</button>
+            </div>
+            <p className="text-xs text-stone-400 dark:text-gray-500">{t("chat_image_ready")}</p>
+          </div>
+        )}
+        {imageError && <p className="px-4 pt-2 text-xs text-red-500">{imageError}</p>}
+
         {/* Input */}
-        <div className="px-4 py-3 flex gap-3 items-center">
+        <div className="px-4 py-3 flex gap-2 items-center">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            className="hidden"
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
+            className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-2xl border border-stone-200 dark:border-gray-700 text-stone-500 dark:text-gray-400 hover:border-forest-300 hover:text-forest-600 transition-colors disabled:opacity-40"
+            aria-label={t("chat_add_photo")}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.132.175C3.098 7.57 2.25 8.507 2.25 9.622v9.128c0 1.128.902 2.036 2.021 2.036h15.458c1.119 0 2.021-.908 2.021-2.036V9.622c0-1.115-.848-2.052-1.804-2.217a48.11 48.11 0 00-1.132-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+            </svg>
+          </button>
           <input
             ref={inputRef}
             type="text"
@@ -222,7 +312,7 @@ export default function ChatPage() {
           />
           <button
             onClick={sendMessage}
-            disabled={!input.trim() || loading}
+            disabled={(!input.trim() && !pendingImage) || loading}
             className="btn-primary px-4 py-2.5 rounded-2xl disabled:opacity-40 flex-shrink-0"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

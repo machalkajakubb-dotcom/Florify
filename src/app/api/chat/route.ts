@@ -4,13 +4,25 @@ import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 // Explicitně vynutíme Node.js runtime (ne Edge) – @google/genai to potřebuje.
 export const runtime = "nodejs";
 
-// gemini-3.5-flash je (červenec 2026) aktuální stabilní Flash model.
-// gemini-2.5-flash byl vyřazen pro nové uživatele.
-// Levnější/rychlejší alternativa s trochu nižší kvalitou: "gemini-3.1-flash-lite".
-const MODEL = "gemini-3.5-flash";
+// gemini-3.1-flash-lite: aktuální (červenec 2026) stabilní, lehký a levný model.
+// Podporuje i obrázky (multimodální vstup). Zvolen místo gemini-3.5-flash kvůli
+// hlášeným výpadkům/nestabilitě – gemini-2.0-flash a gemini-1.5-flash jsou
+// bohužel definitivně vypnuté (Google je zrušil v roce 2026), takže nejde použít.
+const MODEL = "gemini-3.1-flash-lite";
+
+interface IncomingImage {
+  mimeType: string;
+  data: string; // base64 bez "data:image/...;base64," prefixu
+}
 
 export async function POST(req: NextRequest) {
-  const { messages, city, plants, lang } = await req.json();
+  const { messages, city, plants, lang, image } = await req.json() as {
+    messages: { role: string; content: string }[];
+    city: string;
+    plants: string[];
+    lang: string;
+    image?: IncomingImage;
+  };
 
   const rawKey = process.env.GEMINI_API_KEY;
   // Nejčastější chyba při vkládání klíče do Vercel/​.env.local: omylem
@@ -34,6 +46,12 @@ Buď stručná, praktická a přátelská. Používej emoji střídmě (1-2 na z
 Vždy bery v úvahu roční období a místní podnebí.
 Nikdy nedávej nebezpečné rady ohledně chemikálií bez varování.
 
+Uživatel ti může poslat i fotku rostliny (např. podezřelé skvrny, plíseň,
+škůdce, žloutnutí listů). Pokud fotku dostaneš, pozorně ji popiš z pohledu
+zahradníka, over jestli tam vidíš problém, a poraď konkrétní další kroky.
+Pokud si nejsi jistá diagnózou jen z fotky, řekni to a doporuč konzultaci
+s místní zahradnickou poradnou, než navrhneš razantní zásah (např. chemický postřik).
+
 KRITICKY DŮLEŽITÉ – FORMÁT ODPOVĚDI:
 Odpověz VÝHRADNĚ finálním textem zprávy, kterou má uživatel uvidět v chatu – jako
 by ji Flora napsala přímo jemu. Nikdy nepiš svůj myšlenkový postup, plánování,
@@ -48,10 +66,19 @@ uťatá – pokud je téma širší, radši ho zestruč, než abys odpověď ned
 
     // Gemini nezná roli "assistant" jako Anthropic/OpenAI – jeho odpovědi
     // mají roli "model". Historii zpráv proto musíme přemapovat.
-    const contents = (messages as { role: string; content: string }[]).map((m) => ({
+    const contents = messages.map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
     }));
+
+    // Pokud uživatel poslal fotku, přidáme ji jako další "part" k JEHO
+    // poslední zprávě (poslední položka v contents = aktuální dotaz).
+    if (image && contents.length > 0) {
+      const last = contents[contents.length - 1];
+      (last.parts as Array<{ text?: string; inlineData?: { data: string; mimeType: string } }>).push({
+        inlineData: { data: image.data, mimeType: image.mimeType },
+      });
+    }
 
     const response = await ai.models.generateContent({
       model: MODEL,
@@ -62,10 +89,8 @@ uťatá – pokud je téma širší, radši ho zestruč, než abys odpověď ned
         // si model bere tokeny navíc i na interní "přemýšlení" (thinking),
         // takže na finální text pak zbyl jen zlomek limitu a odpověď se uťala.
         maxOutputTokens: 1000,
-        // Gemini 3.x model má ve výchozím stavu zapnuté "thinking" (interní
-        // uvažování před odpovědí), které umí prosakovat i do výstupu jako
-        // viditelné kroky typu "Refining and shortening...". Pro jednoduchý
-        // konverzační chat ho nepotřebujeme – vypneme/omezíme na minimum.
+        // gemini-3.1-flash-lite nedělá rozšířené "thinking" jako 3.5-flash,
+        // ale pro jistotu necháváme na minimu, kdyby to model podporoval.
         thinkingConfig: {
           thinkingLevel: ThinkingLevel.MINIMAL,
           includeThoughts: false,

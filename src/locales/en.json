@@ -16,7 +16,7 @@
   "dashboard_greeting_evening": "Good evening",
   "dashboard_weather_loading": "Loading weather...",
   "dashboard_ai_tip": "Flora's tip of the day",
-  "dashboard_my_garden": "My Garden",
+  "dashboard_my_garden": "My Plants",
   "dashboard_add_plant": "Add plant",
   "dashboard_no_plants": "No plants yet. Add your first!",
   "plant_add_title": "Add a plant",
@@ -111,5 +111,13 @@
   "confirm_delete_message": "This action cannot be undone.",
   "confirm_delete_yes": "Delete",
   "confirm_delete_no": "Cancel",
-  "harvest_date": "Date"
+  "harvest_date": "Date",
+  "beds_year_label": "Year",
+  "beds_year_future": "planned",
+  "chat_image_default_prompt": "What can you tell me about this photo?",
+  "chat_image_error_type": "Please select an image file.",
+  "chat_image_ready": "Photo ready to send",
+  "chat_add_photo": "Add photo",
+  "legal_privacy_policy_link": "Privacy Policy",
+  "legal_terms_link": "Terms of Use"
 }

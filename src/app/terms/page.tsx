@@ -106,28 +106,28 @@ export default function TermsPage() {
 
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-gray-950">
-      <div className="max-w-2xl mx-auto px-5 py-8 safe-top" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 40px)" }}>
+      <div className="max-w-2xl mx-auto px-5 py-8 safe-top font-serif" style={{ paddingTop: "calc(env(safe-area-inset-top) + 28px)", paddingBottom: "calc(env(safe-area-inset-bottom) + 40px)" }}>
         <button onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-sm text-forest-600 dark:text-forest-400 mb-6 font-medium">
+          className="flex items-center gap-1.5 text-sm text-forest-600 dark:text-forest-400 mb-6 font-sans font-medium">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
           {BACK_LABEL[lang as keyof typeof BACK_LABEL] ?? BACK_LABEL.en}
         </button>
 
-        <h1 className="font-display text-3xl font-bold text-bark-900 dark:text-gray-100 mb-1">{c.title}</h1>
-        <p className="text-xs text-stone-400 dark:text-gray-600 mb-8">{c.updated}</p>
+        <h1 className="text-3xl font-bold text-bark-900 dark:text-gray-100 mb-1">{c.title}</h1>
+        <p className="text-xs text-stone-400 dark:text-gray-600 mb-8 font-sans">{c.updated}</p>
 
         <div className="space-y-6">
           {c.sections.map((s, i) => (
             <div key={i}>
-              <h2 className="font-display font-bold text-base text-bark-900 dark:text-gray-100 mb-1.5">{s.h}</h2>
+              <h2 className="font-bold text-base text-bark-900 dark:text-gray-100 mb-1.5">{s.h}</h2>
               <p className="text-sm text-stone-600 dark:text-gray-400 leading-relaxed">{s.b}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-xs text-stone-400 dark:text-gray-600 mt-10">
+        <p className="text-xs text-stone-400 dark:text-gray-600 mt-10 font-sans">
           {lang === "cs" ? "Viz také naše" : lang === "de" ? "Siehe auch unsere" : lang === "pl" ? "Zobacz również naszą" : "See also our"}{" "}
           <Link href="/privacy-policy" className="underline underline-offset-2">
             {lang === "cs" ? "Zásady ochrany osobních údajů" : lang === "de" ? "Datenschutzerklärung" : lang === "pl" ? "Politykę Prywatności" : "Privacy Policy"}

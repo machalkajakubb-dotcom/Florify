@@ -210,8 +210,8 @@ export default function HomePage() {
 
             {/* Tlačítko přidat záhon */}
             <a href="/beds"
-              className="mt-3 flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl border border-dashed border-stone-200 dark:border-gray-700 text-sm text-stone-400 dark:text-gray-500 hover:border-forest-300 dark:hover:border-forest-700 hover:text-forest-600 dark:hover:text-forest-400 transition-colors">
-              <span className="text-base">+</span>
+              className="mt-3 btn-primary w-full">
+              <span className="text-lg">+</span>
               {lang === "cs" ? "Přidat záhon" : lang === "en" ? "Add bed" : lang === "de" ? "Beet hinzufügen" : "Dodaj grządkę"}
             </a>
           </section>

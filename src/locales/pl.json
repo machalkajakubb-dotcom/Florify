@@ -16,7 +16,7 @@
   "dashboard_greeting_evening": "Dobry wieczór",
   "dashboard_weather_loading": "Ładowanie pogody...",
   "dashboard_ai_tip": "Porada dnia od Flory",
-  "dashboard_my_garden": "Mój ogród",
+  "dashboard_my_garden": "Moje rośliny",
   "dashboard_add_plant": "Dodaj roślinę",
   "dashboard_no_plants": "Brak roślin. Dodaj pierwszą!",
   "plant_add_title": "Dodaj roślinę",
@@ -111,5 +111,13 @@
   "confirm_delete_message": "Tej czynności nie można cofnąć.",
   "confirm_delete_yes": "Usuń",
   "confirm_delete_no": "Anuluj",
-  "harvest_date": "Data"
+  "harvest_date": "Data",
+  "beds_year_label": "Rok",
+  "beds_year_future": "zaplanowane",
+  "chat_image_default_prompt": "Co możesz mi powiedzieć o tym zdjęciu?",
+  "chat_image_error_type": "Wybierz plik obrazu.",
+  "chat_image_ready": "Zdjęcie gotowe do wysłania",
+  "chat_add_photo": "Dodaj zdjęcie",
+  "legal_privacy_policy_link": "Polityka Prywatności",
+  "legal_terms_link": "Regulamin"
 }

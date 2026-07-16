@@ -557,6 +557,7 @@ export default function BedsPage() {
   const [showNewForm, setShowNewForm] = useState(false);
   const [newName, setNewName] = useState("");
   const [newNote, setNewNote] = useState("");
+  const [newYear, setNewYear] = useState(new Date().getFullYear());
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
@@ -583,10 +584,10 @@ export default function BedsPage() {
     if (!user) return;
     const newBed: GardenBed = {
       id: crypto.randomUUID(), user_id: user.id, name: newName.trim(),
-      note: newNote.trim(), year: new Date().getFullYear(), cols: 5, rows: 3,
+      note: newNote.trim(), year: newYear, cols: 5, rows: 3,
       cells: [], created_at: new Date().toISOString(),
     };
-    setNewName(""); setNewNote(""); setShowNewForm(false);
+    setNewName(""); setNewNote(""); setNewYear(new Date().getFullYear()); setShowNewForm(false);
     setIsNewBed(true); setEditBed(newBed);
   };
 
@@ -644,6 +645,16 @@ export default function BedsPage() {
                   onKeyDown={e => e.key === "Enter" && handleCreate()} />
                 <input type="text" value={newNote} onChange={e => setNewNote(e.target.value)}
                   placeholder={t("beds_note")} className="input-field" />
+                <div>
+                  <label className="block text-xs font-semibold text-stone-400 dark:text-gray-500 mb-1.5 ml-1">
+                    {t("beds_year_label")}
+                  </label>
+                  <select value={newYear} onChange={e => setNewYear(Number(e.target.value))} className="input-field">
+                    {Array.from({ length: 6 }, (_, i) => new Date().getFullYear() + i).map(y => (
+                      <option key={y} value={y}>{y}{y > new Date().getFullYear() ? ` · ${t("beds_year_future")}` : ""}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="flex gap-2">
                   <button onClick={() => setShowNewForm(false)} className="btn-secondary flex-1 py-2.5 text-sm">✕</button>
                   <button onClick={handleCreate} disabled={!newName.trim()} className="btn-primary flex-1 py-2.5 text-sm disabled:opacity-50">
@@ -652,7 +663,7 @@ export default function BedsPage() {
                 </div>
               </div>
             ) : (
-              <button onClick={() => setShowNewForm(true)} className="w-full btn-secondary border-dashed">
+              <button onClick={() => setShowNewForm(true)} className="w-full btn-primary">
                 <span className="text-lg">+</span> {t("beds_add")}
               </button>
             )}
