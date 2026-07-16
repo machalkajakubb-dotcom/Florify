@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 
+// Explicitně vynutíme Node.js runtime (ne Edge) – @google/genai to potřebuje.
+export const runtime = "nodejs";
+
 const MODEL = "gemini-2.5-flash";
 
 export async function POST(req: NextRequest) {
   const { messages, city, plants, lang } = await req.json();
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const rawKey = process.env.GEMINI_API_KEY;
+  // Nejčastější chyba při vkládání klíče do Vercel/​.env.local: omylem
+  // vložené uvozovky nebo mezera/nový řádek navíc. To by způsobilo
+  // "API key not valid" chybu i s jinak správným klíčem.
+  const apiKey = rawKey?.trim().replace(/^["']|["']$/g, "");
   if (!apiKey) {
     // Mock odpověď bez API klíče
     return NextResponse.json({
@@ -46,9 +53,15 @@ Nikdy nedávej nebezpečné rady ohledně chemikálií bez varování.`;
     const text = response.text ?? "Omlouvám se, nepodařilo se mi odpovědět.";
     return NextResponse.json({ content: text });
   } catch (err) {
+    // Zalogujeme celou chybu do Vercel logů (Project → Deployments → Logs / Runtime Logs)
     console.error("Gemini chat error:", err);
+
+    // Dočasně vracíme i skutečný text chyby přímo do chatu, ať je hned vidět,
+    // co přesně selhává (špatný klíč, vypnuté API, špatný název proměnné...).
+    // Až bude vše fungovat, klidně to smaž a vrať jen obecnou hlášku.
+    const detail = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
-      { content: "Chyba při komunikaci s AI. Zkuste to znovu." },
+      { content: `⚠️ Chyba komunikace s Gemini API:\n${detail}` },
       { status: 500 }
     );
   }
