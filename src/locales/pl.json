@@ -119,5 +119,18 @@
   "chat_image_ready": "Zdjęcie gotowe do wysłania",
   "chat_add_photo": "Dodaj zdjęcie",
   "legal_privacy_policy_link": "Polityka Prywatności",
-  "legal_terms_link": "Regulamin"
+  "legal_terms_link": "Regulamin",
+  "auth_email_placeholder": "ty@email.pl",
+  "auth_password_placeholder": "min. 6 znaków",
+  "auth_password_hint": "Hasło musi mieć co najmniej 6 znaków",
+  "auth_error_fill_all": "Wypełnij pole e-mail i hasło.",
+  "auth_error_password_short": "Hasło musi mieć co najmniej 6 znaków.",
+  "auth_error_unexpected": "Wystąpił nieoczekiwany błąd.",
+  "auth_signup_success": "✅ Konto utworzone! Sprawdź e-mail, aby potwierdzić, lub spróbuj się zalogować.",
+  "auth_error_invalid_credentials": "Nieprawidłowy e-mail lub hasło. Sprawdź dane logowania.",
+  "auth_error_email_not_confirmed": "E-mail nie został jeszcze potwierdzony. Sprawdź swoją skrzynkę.",
+  "auth_error_network": "Nie można połączyć się z Supabase. Sprawdź połączenie internetowe lub czy projekt Supabase jest aktywny (nie wstrzymany).",
+  "auth_error_not_configured": "Aplikacja nie jest poprawnie skonfigurowana – brak danych dostępowych Supabase. Skontaktuj się z administratorem aplikacji (brak NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY w ustawieniach Vercel).",
+  "auth_not_configured_warning": "⚠️ Aplikacja nie jest jeszcze w pełni skonfigurowana (brak połączenia z bazą danych). Logowanie nie zadziała, dopóki na Vercel nie zostaną ustawione zmienne",
+  "auth_not_configured_warning_end": "."
 }

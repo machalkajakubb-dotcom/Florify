@@ -635,7 +635,7 @@ export default function BedsPage() {
           </div>
 
           {loading ? (
-            <div className="text-center py-12 text-stone-300 animate-pulse-soft text-4xl">🌱</div>
+            <div className="flex justify-center py-12"><img src="/icons/loading-tomato.png" alt="" className="w-10 h-10 animate-pulse-soft" /></div>
           ) : (<>
             {showNewForm ? (
               <div className="card border-2 border-forest-200 dark:border-forest-800 space-y-3">

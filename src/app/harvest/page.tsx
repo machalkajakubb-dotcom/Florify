@@ -22,19 +22,19 @@ interface HarvestEntry {
 }
 
 const T = {
-  en: { title:"Harvest Log", addBtn:"Log Harvest", season:"Season", total:"Total", unit_kg:"kg", unit_ks:"pcs",
+  en: { title:"My Harvest", addBtn:"Log Harvest", season:"Season", total:"Total", unit_kg:"kg", unit_ks:"pcs",
         selectPlant:"Select plant", amount:"Amount", note:"Note (optional)", save:"Save", cancel:"Cancel",
         empty:"No harvest entries yet. Start tracking your yield!", noPlants:"Add plants to your garden first.",
         confirmDeleteTitle:"Delete this entry?", confirmDeleteMessage:"This action cannot be undone.", confirmDeleteYes:"Delete", confirmDeleteNo:"Cancel", dateLabel:"Date" },
-  cs: { title:"Sklizeň", addBtn:"Zaznamenat sklizeň", season:"Sezona", total:"Celkem", unit_kg:"kg", unit_ks:"ks",
+  cs: { title:"Moje sklizeň", addBtn:"Zaznamenat sklizeň", season:"Sezona", total:"Celkem", unit_kg:"kg", unit_ks:"ks",
         selectPlant:"Vyber rostlinu", amount:"Množství", note:"Poznámka (volitelně)", save:"Uložit", cancel:"Zrušit",
         empty:"Zatím žádné záznamy. Začni sledovat svou úrodu!", noPlants:"Nejdřív přidej rostliny do zahrady.",
         confirmDeleteTitle:"Opravdu smazat záznam?", confirmDeleteMessage:"Tuto akci nelze vzít zpět.", confirmDeleteYes:"Smazat", confirmDeleteNo:"Zrušit", dateLabel:"Datum" },
-  de: { title:"Ernte-Log", addBtn:"Ernte eintragen", season:"Saison", total:"Gesamt", unit_kg:"kg", unit_ks:"Stk",
+  de: { title:"Meine Ernte", addBtn:"Ernte eintragen", season:"Saison", total:"Gesamt", unit_kg:"kg", unit_ks:"Stk",
         selectPlant:"Pflanze wählen", amount:"Menge", note:"Notiz (optional)", save:"Speichern", cancel:"Abbrechen",
         empty:"Noch keine Einträge. Beginne deine Ernte zu verfolgen!", noPlants:"Füge zuerst Pflanzen hinzu.",
         confirmDeleteTitle:"Eintrag wirklich löschen?", confirmDeleteMessage:"Diese Aktion kann nicht rückgängig gemacht werden.", confirmDeleteYes:"Löschen", confirmDeleteNo:"Abbrechen", dateLabel:"Datum" },
-  pl: { title:"Dziennik Zbiorów", addBtn:"Zapisz zbiory", season:"Sezon", total:"Łącznie", unit_kg:"kg", unit_ks:"szt",
+  pl: { title:"Moje zbiory", addBtn:"Zapisz zbiory", season:"Sezon", total:"Łącznie", unit_kg:"kg", unit_ks:"szt",
         selectPlant:"Wybierz roślinę", amount:"Ilość", note:"Notatka (opcjonalnie)", save:"Zapisz", cancel:"Anuluj",
         empty:"Brak wpisów. Zacznij śledzić swoje zbiory!", noPlants:"Najpierw dodaj rośliny do ogrodu.",
         confirmDeleteTitle:"Na pewno usunąć wpis?", confirmDeleteMessage:"Tej czynności nie można cofnąć.", confirmDeleteYes:"Usuń", confirmDeleteNo:"Anuluj", dateLabel:"Data" },
@@ -123,7 +123,7 @@ export default function HarvestPage() {
             <button onClick={() => setShowForm(true)} className="btn-primary text-sm px-4 py-2">{t.addBtn}</button>
           </div>
 
-          {loading ? <div className="text-center py-12 text-4xl animate-pulse-soft">🧺</div>
+          {loading ? <div className="flex justify-center py-12"><img src="/icons/loading-tomato.png" alt="" className="w-10 h-10 animate-pulse-soft" /></div>
           : seasons.length === 0 ? (
             <div className="card text-center py-12">
               <div className="text-5xl mb-3">🌱</div>

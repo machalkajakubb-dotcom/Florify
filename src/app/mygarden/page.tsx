@@ -5,10 +5,14 @@ import { Navigation } from "@/components/Navigation";
 import { useLang } from "@/hooks/useLang";
 
 const T = {
-  en: { title:"My Garden", plants:"My Plants", plantsDesc:"Manage what you grow", beds:"My Beds", bedsDesc:"Plan your garden layout", harvest:"Harvest Log", harvestDesc:"Track your seasonal harvest" },
-  cs: { title:"Moje Zahrada", plants:"Moje Rostliny", plantsDesc:"Co právě pěstuješ", beds:"Moje Záhony", bedsDesc:"Naplánuj rozložení záhonů", harvest:"Sklizeň", harvestDesc:"Záznam sezónní úrody" },
-  de: { title:"Mein Garten", plants:"Meine Pflanzen", plantsDesc:"Was du anbaust", beds:"Meine Beete", bedsDesc:"Beetplanung", harvest:"Ernte-Log", harvestDesc:"Saisonale Ernte verfolgen" },
-  pl: { title:"Mój Ogród", plants:"Moje Rośliny", plantsDesc:"Co uprawiasz", beds:"Moje Grządki", bedsDesc:"Zaplanuj układ grządek", harvest:"Dziennik Zbiorów", harvestDesc:"Śledź sezonowe zbiory" },
+  en: { title:"My Garden", plants:"My Plants", plantsDesc:"Manage what you grow", beds:"My Beds", bedsDesc:"Plan your garden layout",
+        harvest:"My Harvest", harvestDesc:"Track your seasonal harvest", products:"My Products", productsDesc:"Jams, preserves, dried goods & more" },
+  cs: { title:"Moje Zahrada", plants:"Moje Rostliny", plantsDesc:"Co právě pěstuješ", beds:"Moje Záhony", bedsDesc:"Naplánuj rozložení záhonů",
+        harvest:"Moje sklizeň", harvestDesc:"Záznam sezónní úrody", products:"Moje Výrobky", productsDesc:"Zavařeniny, mošty, sušené a skladované" },
+  de: { title:"Mein Garten", plants:"Meine Pflanzen", plantsDesc:"Was du anbaust", beds:"Meine Beete", bedsDesc:"Beetplanung",
+        harvest:"Meine Ernte", harvestDesc:"Saisonale Ernte verfolgen", products:"Meine Produkte", productsDesc:"Eingemachtes, Säfte, Getrocknetes & mehr" },
+  pl: { title:"Mój Ogród", plants:"Moje Rośliny", plantsDesc:"Co uprawiasz", beds:"Moje Grządki", bedsDesc:"Zaplanuj układ grządek",
+        harvest:"Moje zbiory", harvestDesc:"Śledź sezonowe zbiory", products:"Moje Wyroby", productsDesc:"Przetwory, soki, suszone i przechowywane" },
 };
 
 export default function MyGardenPage() {
@@ -20,6 +24,7 @@ export default function MyGardenPage() {
     { icon:"🌿", label:t.plants, desc:t.plantsDesc, href:"/garden", color:"from-forest-400 to-forest-600" },
     { icon:"🪴", label:t.beds, desc:t.bedsDesc, href:"/beds", color:"from-soil-400 to-soil-600" },
     { icon:"🧺", label:t.harvest, desc:t.harvestDesc, href:"/harvest", color:"from-amber-400 to-amber-600" },
+    { icon:"🥫", label:t.products, desc:t.productsDesc, href:"/products", color:"from-rose-400 to-rose-600" },
   ];
 
   return (

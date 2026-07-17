@@ -145,7 +145,7 @@ export default function ChatPage() {
 
   if (!initialized) return (
     <div className="h-screen flex items-center justify-center bg-stone-50 dark:bg-gray-950">
-      <div className="text-4xl animate-bounce">🌿</div>
+      <img src="/icons/loading-tomato.png" alt="" className="w-12 h-12 animate-bounce" />
     </div>
   );
 

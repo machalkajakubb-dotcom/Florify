@@ -119,5 +119,18 @@
   "chat_image_ready": "Photo ready to send",
   "chat_add_photo": "Add photo",
   "legal_privacy_policy_link": "Privacy Policy",
-  "legal_terms_link": "Terms of Use"
+  "legal_terms_link": "Terms of Use",
+  "auth_email_placeholder": "you@email.com",
+  "auth_password_placeholder": "min. 6 characters",
+  "auth_password_hint": "Password must be at least 6 characters",
+  "auth_error_fill_all": "Please fill in both email and password.",
+  "auth_error_password_short": "Password must be at least 6 characters.",
+  "auth_error_unexpected": "An unexpected error occurred.",
+  "auth_signup_success": "✅ Account created! Check your email to confirm, or try signing in.",
+  "auth_error_invalid_credentials": "Wrong email or password. Please check your login details.",
+  "auth_error_email_not_confirmed": "Your email hasn't been confirmed yet. Please check your inbox.",
+  "auth_error_network": "Couldn't connect to Supabase. Check your internet connection or whether the Supabase project is active (not paused).",
+  "auth_error_not_configured": "The app isn't configured correctly – missing Supabase credentials. Please contact the app administrator (missing NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel settings).",
+  "auth_not_configured_warning": "⚠️ The app isn't fully configured yet (missing database connection). Sign-in won't work until",
+  "auth_not_configured_warning_end": "are set on Vercel."
 }

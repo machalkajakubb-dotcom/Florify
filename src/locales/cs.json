@@ -119,5 +119,18 @@
   "chat_image_ready": "Fotka připravena k odeslání",
   "chat_add_photo": "Přidat fotku",
   "legal_privacy_policy_link": "Zásady ochrany osobních údajů",
-  "legal_terms_link": "Podmínky užití"
+  "legal_terms_link": "Podmínky užití",
+  "auth_email_placeholder": "vas@email.cz",
+  "auth_password_placeholder": "min. 6 znaků",
+  "auth_password_hint": "Heslo musí mít alespoň 6 znaků",
+  "auth_error_fill_all": "Vyplňte prosím e-mail i heslo.",
+  "auth_error_password_short": "Heslo musí mít alespoň 6 znaků.",
+  "auth_error_unexpected": "Nastala neočekávaná chyba.",
+  "auth_signup_success": "✅ Účet vytvořen! Zkontrolujte e-mail pro potvrzení, nebo se zkuste přihlásit.",
+  "auth_error_invalid_credentials": "Špatný e-mail nebo heslo. Zkontrolujte přihlašovací údaje.",
+  "auth_error_email_not_confirmed": "E-mail ještě nebyl ověřen. Zkontrolujte svou schránku.",
+  "auth_error_network": "Nelze se připojit k Supabase. Zkontrolujte internetové připojení nebo zda je projekt v Supabase aktivní (nepozastavený).",
+  "auth_error_not_configured": "Aplikace není správně nakonfigurovaná – chybí přístupové údaje k Supabase. Kontaktujte prosím správce aplikace (chybí NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY v nastavení Vercelu).",
+  "auth_not_configured_warning": "⚠️ Aplikace zatím není plně nakonfigurovaná (chybí připojení k databázi). Přihlášení nebude fungovat, dokud nebudou na Vercelu nastaveny proměnné",
+  "auth_not_configured_warning_end": "."
 }

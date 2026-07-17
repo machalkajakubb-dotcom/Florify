@@ -11,19 +11,19 @@ const T = {
   en: { title: "Set a new password", password: "New password", confirm: "Confirm password", save: "Save new password",
         mismatch: "Passwords don't match.", tooShort: "Password must be at least 6 characters.",
         success: "✅ Password changed! Redirecting to login...", invalidLink: "This reset link is invalid or has expired. Please request a new one from the login page.",
-        backToLogin: "Back to login" },
+        backToLogin: "Back to login", passwordPlaceholder: "min. 6 characters" },
   cs: { title: "Nastavte nové heslo", password: "Nové heslo", confirm: "Potvrďte heslo", save: "Uložit nové heslo",
         mismatch: "Hesla se neshodují.", tooShort: "Heslo musí mít alespoň 6 znaků.",
         success: "✅ Heslo bylo změněno! Přesměrovávám na přihlášení...", invalidLink: "Tento odkaz pro obnovení hesla je neplatný nebo vypršel. Vyžádejte si prosím nový na přihlašovací stránce.",
-        backToLogin: "Zpět na přihlášení" },
+        backToLogin: "Zpět na přihlášení", passwordPlaceholder: "min. 6 znaků" },
   de: { title: "Neues Passwort festlegen", password: "Neues Passwort", confirm: "Passwort bestätigen", save: "Neues Passwort speichern",
         mismatch: "Die Passwörter stimmen nicht überein.", tooShort: "Das Passwort muss mindestens 6 Zeichen haben.",
         success: "✅ Passwort geändert! Weiterleitung zur Anmeldung...", invalidLink: "Dieser Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
-        backToLogin: "Zurück zur Anmeldung" },
+        backToLogin: "Zurück zur Anmeldung", passwordPlaceholder: "min. 6 Zeichen" },
   pl: { title: "Ustaw nowe hasło", password: "Nowe hasło", confirm: "Potwierdź hasło", save: "Zapisz nowe hasło",
         mismatch: "Hasła się nie zgadzają.", tooShort: "Hasło musi mieć co najmniej 6 znaków.",
         success: "✅ Hasło zostało zmienione! Przekierowuję do logowania...", invalidLink: "Ten link jest nieprawidłowy lub wygasł. Poproś o nowy na stronie logowania.",
-        backToLogin: "Powrót do logowania" },
+        backToLogin: "Powrót do logowania", passwordPlaceholder: "min. 6 znaków" },
 };
 
 export default function ResetPasswordPage() {
@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
             <div>
               <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-1">{t.password}</label>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                className="input-field" placeholder="min. 6 znaků" autoComplete="new-password" />
+                className="input-field" placeholder={t.passwordPlaceholder} autoComplete="new-password" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-bark-700 dark:text-gray-300 mb-1">{t.confirm}</label>

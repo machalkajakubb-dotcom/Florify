@@ -62,7 +62,7 @@ export default function LoginPage() {
       if (err) throw err;
       setSuccess(t("auth_reset_link_sent"));
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Nastala neočekávaná chyba.");
+      setError(e instanceof Error ? e.message : t("auth_error_unexpected"));
     } finally {
       setLoading(false);
     }
@@ -70,11 +70,11 @@ export default function LoginPage() {
 
   const handleSubmit = async () => {
     if (!email || !password) {
-      setError("Vyplňte prosím e-mail i heslo.");
+      setError(t("auth_error_fill_all"));
       return;
     }
     if (password.length < 6) {
-      setError("Heslo musí mít alespoň 6 znaků.");
+      setError(t("auth_error_password_short"));
       return;
     }
     setLoading(true);
@@ -105,7 +105,7 @@ export default function LoginPage() {
 
         // Pokud je potřeba ověření e-mailem
         if (data.user && !data.session) {
-          setSuccess("✅ Účet vytvořen! Zkontrolujte e-mail pro potvrzení, nebo se zkuste přihlásit.");
+          setSuccess(t("auth_signup_success"));
           setIsSignUp(false);
           setLoading(false);
           return;
@@ -114,23 +114,23 @@ export default function LoginPage() {
         const { error: err } = await supabase.auth.signInWithPassword({ email, password });
         if (err) {
           if (err.message.includes("Invalid login credentials")) {
-            throw new Error("Špatný e-mail nebo heslo. Zkontrolujte přihlašovací údaje.");
+            throw new Error(t("auth_error_invalid_credentials"));
           }
           if (err.message.includes("Email not confirmed")) {
-            throw new Error("E-mail ještě nebyl ověřen. Zkontrolujte svou schránku.");
+            throw new Error(t("auth_error_email_not_confirmed"));
           }
           throw err;
         }
         router.push("/");
       }
     } catch (e: unknown) {
-      let msg = e instanceof Error ? e.message : "Nastala neočekávaná chyba.";
+      let msg = e instanceof Error ? e.message : t("auth_error_unexpected");
       // "Failed to fetch" / "Load failed" obvykle znamená, že Supabase URL
       // nebo klíč nejsou na serveru správně nastavené (chybí env proměnné na Vercelu).
       if (msg.includes("Failed to fetch") || msg.includes("Load failed") || msg.includes("NetworkError")) {
         msg = isSupabaseConfigured
-          ? "Nelze se připojit k Supabase. Zkontrolujte internetové připojení nebo zda je projekt v Supabase aktivní (nepozastavený)."
-          : "Aplikace není správně nakonfigurovaná – chybí přístupové údaje k Supabase. Kontaktujte prosím správce aplikace (chybí NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY v nastavení Vercelu).";
+          ? t("auth_error_network")
+          : t("auth_error_not_configured");
       }
       setError(msg);
     } finally {
@@ -171,7 +171,7 @@ export default function LoginPage() {
         {/* Varování při chybějící konfiguraci Supabase */}
         {!isSupabaseConfigured && (
           <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-2xl px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
-            ⚠️ Aplikace zatím není plně nakonfigurovaná (chybí připojení k databázi). Přihlášení nebude fungovat, dokud nebudou na Vercelu nastaveny proměnné <code className="text-xs">NEXT_PUBLIC_SUPABASE_URL</code> a <code className="text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
+            {t("auth_not_configured_warning")} <code className="text-xs">NEXT_PUBLIC_SUPABASE_URL</code> {lang === "cs" ? "a" : lang === "de" ? "und" : lang === "pl" ? "i" : "and"} <code className="text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> {t("auth_not_configured_warning_end")}
           </div>
         )}
 
@@ -224,7 +224,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input-field"
-              placeholder="vas@email.cz"
+              placeholder={t("auth_email_placeholder")}
               autoComplete="email"
               onKeyDown={(e) => e.key === "Enter" && (mode === "forgot" ? handleForgotPassword() : handleSubmit())}
             />
@@ -239,12 +239,12 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="input-field"
-                placeholder="min. 6 znaků"
+                placeholder={t("auth_password_placeholder")}
                 autoComplete={isSignUp ? "new-password" : "current-password"}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
               />
               {isSignUp && (
-                <p className="text-xs text-garden-500 mt-1 ml-1">Heslo musí mít alespoň 6 znaků</p>
+                <p className="text-xs text-garden-500 mt-1 ml-1">{t("auth_password_hint")}</p>
               )}
               {!isSignUp && (
                 <button

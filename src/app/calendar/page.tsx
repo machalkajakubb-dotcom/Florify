@@ -36,7 +36,7 @@ export default function CalendarPage() {
         <div className="max-w-lg mx-auto px-4 py-5">
           <h1 className="font-display text-2xl font-bold text-bark-900 dark:text-gray-100 mb-5">{t("calendar_title")}</h1>
           {loading
-            ? <div className="text-center py-12 text-stone-300 animate-pulse-soft text-4xl">📅</div>
+            ? <div className="flex justify-center py-12"><img src="/icons/loading-tomato.png" alt="" className="w-10 h-10 animate-pulse-soft" /></div>
             : <GardenCalendar plantIds={plants.map(p => p.plant_id)} />
           }
         </div>

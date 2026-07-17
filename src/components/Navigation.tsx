@@ -6,7 +6,7 @@ import { useLang } from "@/hooks/useLang";
 // Navigace s ikonami a popisky (6 sekcí)
 const NAV_ITEMS = [
   { href: "/",         icon: HomeIcon,     match: ["/"],                                    labelKey: "nav_home" },
-  { href: "/mygarden", icon: GardenIcon,   match: ["/mygarden", "/garden", "/beds", "/harvest"], labelKey: "nav_garden" },
+  { href: "/mygarden", icon: GardenIcon,   match: ["/mygarden", "/garden", "/beds", "/harvest", "/products"], labelKey: "nav_garden" },
   { href: "/calendar", icon: CalIcon,      match: ["/calendar"],                            labelKey: "nav_calendar" },
   { href: "/chat",     icon: ChatIcon,     match: ["/chat"],                                 labelKey: "nav_chat" },
   { href: "/game",     icon: GameIcon,     match: ["/game"],                                 labelKey: "nav_game" },

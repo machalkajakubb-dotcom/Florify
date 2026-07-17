@@ -522,7 +522,7 @@ export default function GamePage() {
   // ── Render helpers ────────────────────────────────────────────────────────
   if (loading || !game) return (
     <div className="h-screen flex items-center justify-center bg-stone-50 dark:bg-gray-950">
-      <div className="text-5xl animate-bounce">🌱</div>
+      <img src="/icons/loading-tomato.png" alt="" className="w-14 h-14 animate-bounce" />
     </div>
   );
 

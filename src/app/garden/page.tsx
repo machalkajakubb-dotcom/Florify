@@ -81,7 +81,7 @@ export default function GardenPage() {
           </p>
 
           {loading ? (
-            <div className="text-center py-12 text-stone-300 animate-pulse-soft text-4xl">🌱</div>
+            <div className="flex justify-center py-12"><img src="/icons/loading-tomato.png" alt="" className="w-10 h-10 animate-pulse-soft" /></div>
           ) : (
             <div className="card">
               <PlantGrid

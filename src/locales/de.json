@@ -119,5 +119,18 @@
   "chat_image_ready": "Foto bereit zum Senden",
   "chat_add_photo": "Foto hinzufügen",
   "legal_privacy_policy_link": "Datenschutzerklärung",
-  "legal_terms_link": "Nutzungsbedingungen"
+  "legal_terms_link": "Nutzungsbedingungen",
+  "auth_email_placeholder": "du@email.de",
+  "auth_password_placeholder": "min. 6 Zeichen",
+  "auth_password_hint": "Das Passwort muss mindestens 6 Zeichen haben",
+  "auth_error_fill_all": "Bitte E-Mail und Passwort ausfüllen.",
+  "auth_error_password_short": "Das Passwort muss mindestens 6 Zeichen haben.",
+  "auth_error_unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
+  "auth_signup_success": "✅ Konto erstellt! Bitte E-Mail zur Bestätigung prüfen oder versuchen Sie sich anzumelden.",
+  "auth_error_invalid_credentials": "Falsche E-Mail oder falsches Passwort. Bitte Anmeldedaten prüfen.",
+  "auth_error_email_not_confirmed": "E-Mail wurde noch nicht bestätigt. Bitte Posteingang prüfen.",
+  "auth_error_network": "Verbindung zu Supabase fehlgeschlagen. Prüfen Sie Ihre Internetverbindung oder ob das Supabase-Projekt aktiv ist (nicht pausiert).",
+  "auth_error_not_configured": "Die App ist nicht korrekt konfiguriert – Supabase-Zugangsdaten fehlen. Bitte kontaktieren Sie den Administrator (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY fehlen in den Vercel-Einstellungen).",
+  "auth_not_configured_warning": "⚠️ Die App ist noch nicht vollständig konfiguriert (Datenbankverbindung fehlt). Die Anmeldung funktioniert erst, wenn auf Vercel die Variablen",
+  "auth_not_configured_warning_end": "gesetzt sind."
 }
