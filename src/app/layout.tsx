@@ -4,9 +4,41 @@ import { LangProvider } from "@/hooks/useLang";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { SplashScreen } from "@/components/SplashScreen";
 
+// POZOR PRO PROVOZOVATELE: nastav v proměnných prostředí (Vercel) klíč
+// NEXT_PUBLIC_SITE_URL na skutečnou doménu appky (např. https://florimy.app),
+// jinak se použije níže uvedená záložní hodnota – uprav si ji podle potřeby.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://florimy.vercel.app";
+
+// Klíčová slova ve všech 4 jazycích appky, aby appku šlo najít bez ohledu na
+// to, v jakém jazyce člověk hledá (Google beztak bere <meta name="keywords">
+// jen jako slabý signál, hlavní váhu má obsah stránky a odkazy zvenčí, ale
+// neuškodí to mít vyplněné).
+const KEYWORDS = [
+  // čeština
+  "Florimy", "aplikace pro zahrádkáře", "zahradnická aplikace", "chytrá zahrada",
+  "plánovač záhonů", "zahradnický kalendář", "AI botanička", "péče o rostliny",
+  "moje zahrada", "sklizeň aplikace",
+  // english
+  "Florimy", "gardening app", "smart garden assistant", "garden planner",
+  "raised bed planner", "gardening calendar", "AI plant doctor", "plant care app",
+  "harvest tracker", "vegetable garden app",
+  // deutsch
+  "Gartenapp", "Garten-App", "smarter Gartenassistent", "Beetplaner",
+  "Gartenkalender", "KI-Pflanzendoktor", "Pflanzenpflege App", "Ernte-Tracker",
+  // polski
+  "aplikacja dla ogrodników", "aplikacja ogrodnicza", "planer grządek",
+  "kalendarz ogrodniczy", "asystent AI dla ogrodu", "pielęgnacja roślin",
+  "śledzenie zbiorów",
+];
+
 export const metadata: Metadata = {
-  title: "Florimy – Your Smart Garden Assistant",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Florimy – Your Smart Garden Assistant",
+    template: "%s | Florimy",
+  },
   description: "Hyper-local AI assistant for gardeners. Weather, garden beds, calendar, chat with Flora.",
+  keywords: KEYWORDS,
   manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "default", title: "Florimy" },
   formatDetection: { telephone: false },
@@ -20,6 +52,26 @@ export const metadata: Metadata = {
       { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
     shortcut: ["/favicon.ico"],
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "Florimy",
+    title: "Florimy – Your Smart Garden Assistant",
+    description: "Hyper-local AI assistant for gardeners. Weather, garden beds, calendar, chat with Flora.",
+    locale: "en",
+    alternateLocale: ["cs_CZ", "de_DE", "pl_PL"],
+    images: [{ url: "/icons/icon-512x512.png", width: 512, height: 512, alt: "Florimy" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Florimy – Your Smart Garden Assistant",
+    description: "Hyper-local AI assistant for gardeners. Weather, garden beds, calendar, chat with Flora.",
+    images: ["/icons/icon-512x512.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
