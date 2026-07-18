@@ -157,7 +157,7 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="text-center">
-          <div className="text-6xl mb-3">🌱</div>
+          <img src="/icons/loading-tomato.png" alt="Florimy" className="w-20 h-20 mx-auto mb-3 rounded-3xl shadow-md" />
           <h1 className="font-display text-3xl font-bold text-garden-800 dark:text-garden-300">Florimy</h1>
           <p className="text-garden-600 dark:text-garden-400 mt-1 text-sm">{t("tagline")}</p>
         </div>

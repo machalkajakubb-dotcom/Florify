@@ -657,13 +657,16 @@ export default function GamePage() {
             const mature = remaining === 0;
 
             return (
-              <button key={slotId}
+              <div key={slotId}
                 onClick={() => mature ? doHarvest(slot) : setUpgradeSlot(slotId)}
                 onContextMenu={(e) => {
                   e.preventDefault(); // Zabrání vyskočení systémového menu v mobilu i na PC
                   setPlantModal(slotId);
                 }}
-                className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 p-2 transition-all ${
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (mature ? doHarvest(slot) : setUpgradeSlot(slotId)); }}
+                className={`relative aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 p-2 transition-all cursor-pointer select-none ${
                   mature ? "border-amber-400 bg-amber-50 dark:bg-amber-950 animate-pulse-soft"
                          : "border-forest-200 dark:border-forest-800 bg-white dark:bg-gray-900"
                 }`}>
@@ -684,7 +687,7 @@ export default function GamePage() {
                   className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-stone-100 dark:bg-gray-800 text-[9px] text-stone-400 flex items-center justify-center hover:bg-stone-200 transition-colors">
                   🔄
                 </button>
-              </button>
+              </div>
             );
           })}
         </div>

@@ -43,6 +43,17 @@ export function LangProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    // KRITICKÉ: <html lang="..."> musí odpovídat SKUTEČNĚ zobrazenému jazyku.
+    // Layout má natvrdo lang="en" (kvůli SEO/sdílení před přihlášením), ale
+    // appka pak zobrazuje třeba češtinu. Když si prohlížeč (hlavně Chrome na
+    // Androidu) myslí, že stránka je anglicky, ale vidí český text, nabídne
+    // (nebo rovnou provede) automatický překlad – a ten umí slova jako
+    // "sklizeň" zprznit na naprosto nesmyslné "skluzavka" apod. Nastavením
+    // skutečného jazyka na <html> tomu zabráníme.
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   const setLang = (l: Language) => {
     setLangState(l);
     localStorage.setItem("florify_lang", l);
